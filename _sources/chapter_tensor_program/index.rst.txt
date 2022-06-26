@@ -95,8 +95,8 @@
 ``vi`` 有关的循环，只要实际执行中 ``vi`` 的值按照从 ``0`` 到 ``128``
 的顺序变化。
 
-Tensor Program Transformation in Action
----------------------------------------
+张量程序变换实践
+----------------
 
 安装相关的包
 ~~~~~~~~~~~~
@@ -222,7 +222,7 @@ Python 程序，而是对应一个机器学习编译过程中的张量程序。T
 .. parsed-literal::
     :class: output
 
-    <tvm.runtime.packed_func.PackedFunc at 0x7fe271c889f0>
+    <tvm.runtime.packed_func.PackedFunc at 0x7f9bfa7f7d60>
 
 
 
@@ -540,7 +540,7 @@ API 构造初始的张量程序，并编译执行它。
                         C[m, n] = tir.float32(0)
                     C[m, n] = C[m, n] + A[m, k] * B[k, n]
         
-    Baseline: 3.556584
+    Baseline: 3.934837
 
 
 我们可以变换张量程序中的循环，使得在新循环下内存访问的模式对缓存更加友好。我们尝试下面的调度。
@@ -590,7 +590,7 @@ API 构造初始的张量程序，并编译执行它。
                         C[m, n] = tir.float32(0)
                     C[m, n] = C[m, n] + A[m, k] * B[k, n]
         
-    after transformation: 0.392352
+    after transformation: 0.216680
 
 
 尝试改变 ``batch_size``

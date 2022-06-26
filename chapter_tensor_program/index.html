@@ -150,23 +150,23 @@ Show Source
 <h2><span class="section-number">2.1. </span>元张量函数<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
 <p>在上一章的概述中，我们介绍到机器学习编译的过程可以被看作张量函数之间的变换。一个典型的机器学习模型的执行包含许多步将输入张量之间转化为最终预测的计算步骤，其中的每一步都被称为元张量函数
 (primitive tensor function)。</p>
-<div class="figure align-default" id="id12">
+<div class="figure align-default" id="id13">
 <span id="fig-primitive-tensor-func"></span><img alt="../_images/primitive_tensor_func.png" src="../_images/primitive_tensor_func.png" />
-<p class="caption"><span class="caption-number">Fig. 2.1.1 </span><span class="caption-text">元张量函数</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 2.1.1 </span><span class="caption-text">元张量函数</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
 </div>
 <p>在上面这张图中，张量算子 <code class="docutils literal notranslate"><span class="pre">linear</span></code>, <code class="docutils literal notranslate"><span class="pre">add</span></code>, <code class="docutils literal notranslate"><span class="pre">relu</span></code> 和 <code class="docutils literal notranslate"><span class="pre">softmax</span></code>
 均为元张量函数。特别的是，许多不同的抽象能够表示（和实现）同样的元张量函数（正如下图所示）。我们可以选择调用已经预先编译的框架库（如
 <code class="docutils literal notranslate"><span class="pre">torch.add</span></code> 和 <code class="docutils literal notranslate"><span class="pre">numpy.add</span></code>）并利用在 Python
 中的实现。在实践中，元张量函数被例如 C 或 C++
 的低级语言所实现，并且在一些时候会包含一些汇编代码。</p>
-<div class="figure align-default" id="id13">
+<div class="figure align-default" id="id14">
 <span id="fig-tensor-func-abstractions"></span><img alt="../_images/tensor_func_abstractions.png" src="../_images/tensor_func_abstractions.png" />
-<p class="caption"><span class="caption-number">Fig. 2.1.2 </span><span class="caption-text">同一个元张量函数的不同形式</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 2.1.2 </span><span class="caption-text">同一个元张量函数的不同形式</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
 </div>
 <p>许多机器学习框架都提供机器学习模型的编译过程，以将元张量函数变换为更加专门的、针对特定工作和部署环境的函数。</p>
-<div class="figure align-default" id="id14">
+<div class="figure align-default" id="id15">
 <span id="id3"></span><span id="fig-tensor-func-transformation"></span><img alt="../_images/tensor_func_transformation.png" src="../_images/tensor_func_transformation.png" />
-<p class="caption"><span class="caption-number">Fig. 2.1.3 </span><span class="caption-text">元张量函数间的变换</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 2.1.3 </span><span class="caption-text">元张量函数间的变换</span><a class="headerlink" href="#id15" title="Permalink to this image">¶</a></p>
 </div>
 <p>上面这张图展示了一个元张量函数 <code class="docutils literal notranslate"><span class="pre">add</span></code>
 的实现被变换至另一个不同实现的例子，其中在右侧的代码是一段表示可能的组合优化的伪代码：左侧代码中的循环被拆分出长度为
@@ -176,24 +176,24 @@ Show Source
 <h2><span class="section-number">2.2. </span>张量程序抽象<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
 <p>上一节谈到了对元张量函数变换的需要。为了让我们能够更有效地变换元张量函数，我们需要一个有效的抽象来表示这些函数。</p>
 <p>通常来说，一个典型的元张量函数实现的抽象包含了一下成分：存储数据的多维数组，驱动张量计算的循环嵌套以及计算部分本身的语句。</p>
-<div class="figure align-default" id="id15">
+<div class="figure align-default" id="id16">
 <span id="fig-tensor-func-elements"></span><img alt="../_images/tensor_func_elements.png" src="../_images/tensor_func_elements.png" />
-<p class="caption"><span class="caption-number">Fig. 2.2.1 </span><span class="caption-text">元张量函数中的典型成分</span><a class="headerlink" href="#id15" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 2.2.1 </span><span class="caption-text">元张量函数中的典型成分</span><a class="headerlink" href="#id16" title="Permalink to this image">¶</a></p>
 </div>
 <p>我们称这类抽象为
 ``张量程序抽象’’。张量程序抽象的一个重要性质是，他们能够被一系列有效的程序变换所改变。</p>
-<div class="figure align-default" id="id16">
+<div class="figure align-default" id="id17">
 <span id="fig-tensor-func-seq-transform"></span><img alt="../_images/tensor_func_seq_transform.png" src="../_images/tensor_func_seq_transform.png" />
-<p class="caption"><span class="caption-number">Fig. 2.2.2 </span><span class="caption-text">一个元张量函数的序列变换</span><a class="headerlink" href="#id16" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 2.2.2 </span><span class="caption-text">一个元张量函数的序列变换</span><a class="headerlink" href="#id17" title="Permalink to this image">¶</a></p>
 </div>
 <p>例如，我们能够通过一组变换操作（如循环拆分、并行和向量化）将上图左侧的一个初始循环程序变换为右侧的程序。</p>
 <div class="section" id="id5">
 <h3><span class="section-number">2.2.1. </span>张量程序抽象中的其它结构<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <p>重要的是，我们不能任意地对程序进行变换，比方说这可能是因为一些计算会依赖于循环之间的顺序。但幸运的是，我们所感兴趣的大多数元张量函数都具有良好的属性（例如循环迭代之间的独立性）。</p>
 <p>张量程序可以将这些额外的信息合并为程序的一部分，以使程序变换更加便利。</p>
-<div class="figure align-default" id="id17">
+<div class="figure align-default" id="id18">
 <span id="fig-tensor-func-iteration"></span><img alt="../_images/tensor_func_iteration.png" src="../_images/tensor_func_iteration.png" />
-<p class="caption"><span class="caption-number">Fig. 2.2.3 </span><span class="caption-text">循环迭代作为张量程序的额外信息</span><a class="headerlink" href="#id17" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 2.2.3 </span><span class="caption-text">循环迭代作为张量程序的额外信息</span><a class="headerlink" href="#id18" title="Permalink to this image">¶</a></p>
 </div>
 <p>举个例子，上面图中的程序包含额外的 <code class="docutils literal notranslate"><span class="pre">T.axis.spatial</span></code> 标注，表明 <code class="docutils literal notranslate"><span class="pre">vi</span></code>
 这个特定的变量被映射到循环变量
@@ -202,10 +202,10 @@ Show Source
 的顺序变化。</p>
 </div>
 </div>
-<div class="section" id="tensor-program-transformation-in-action">
-<h2><span class="section-number">2.3. </span>Tensor Program Transformation in Action<a class="headerlink" href="#tensor-program-transformation-in-action" title="Permalink to this heading">¶</a></h2>
 <div class="section" id="id6">
-<h3><span class="section-number">2.3.1. </span>安装相关的包<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<h2><span class="section-number">2.3. </span>张量程序变换实践<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="id7">
+<h3><span class="section-number">2.3.1. </span>安装相关的包<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
 <p>为了本课程的目标，我们会使用 TVM
 （一个开源的机器学习编译框架）中一些正在持续开发的部分。我们提供了下面的命令用于为
 MLC 课程安装一个包装好的版本。</p>
@@ -213,8 +213,8 @@ MLC 课程安装一个包装好的版本。</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id7">
-<h3><span class="section-number">2.3.2. </span>构造张量程序<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="id8">
+<h3><span class="section-number">2.3.2. </span>构造张量程序<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <p>让我们首先构造一个执行两向量加法的张量程序。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tvm</span>
@@ -271,8 +271,8 @@ Python 程序，而是对应一个机器学习编译过程中的张量程序。T
 </pre></div>
 </div>
 </div>
-<div class="section" id="id8">
-<h3><span class="section-number">2.3.3. </span>编译与运行<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="id9">
+<h3><span class="section-number">2.3.3. </span>编译与运行<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
 <p>在任何时刻，我们都可以通过 <code class="docutils literal notranslate"><span class="pre">build</span></code> 将一个 IRModule
 转化为可以执行的函数。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rt_mod</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">MyModule</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>  <span class="c1"># The module for CPU backends.</span>
@@ -288,7 +288,7 @@ Python 程序，而是对应一个机器学习编译过程中的张量程序。T
 <span class="n">func</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">packed_func</span><span class="o">.</span><span class="n">PackedFunc</span> <span class="n">at</span> <span class="mh">0x7fe271c889f0</span><span class="o">&gt;</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">packed_func</span><span class="o">.</span><span class="n">PackedFunc</span> <span class="n">at</span> <span class="mh">0x7f9bfa7f7d60</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
@@ -343,8 +343,8 @@ Python 程序，而是对应一个机器学习编译过程中的张量程序。T
 </pre></div>
 </div>
 </div>
-<div class="section" id="id9">
-<h3><span class="section-number">2.3.4. </span>张量程序变换<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="id10">
+<h3><span class="section-number">2.3.4. </span>张量程序变换<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <p>现在我们开始变换张量程序。一个张量程序可以通过一个辅助的名为调度（schedule）的数据结构得到变换。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sch</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">tir</span><span class="o">.</span><span class="n">Schedule</span><span class="p">(</span><span class="n">MyModule</span><span class="p">)</span>
 <span class="nb">type</span><span class="p">(</span><span class="n">sch</span><span class="p">)</span>
@@ -481,8 +481,8 @@ API。</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id10">
-<h3><span class="section-number">2.3.6. </span>变换一个矩阵乘法程序<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="id11">
+<h3><span class="section-number">2.3.6. </span>变换一个矩阵乘法程序<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
 <p>在上面的例子中，我们展示了如何变换一个向量加法程序。现在我们尝试应用一些变换到一个稍微更复杂的的程序——矩阵乘法程序。我们首先使用张量表达式
 API 构造初始的张量程序，并编译执行它。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tvm</span> <span class="kn">import</span> <span class="n">te</span>
@@ -538,7 +538,7 @@ API 构造初始的张量程序，并编译执行它。</p>
                     <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tir</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span>
 
-<span class="n">Baseline</span><span class="p">:</span> <span class="mf">3.556584</span>
+<span class="n">Baseline</span><span class="p">:</span> <span class="mf">3.934837</span>
 </pre></div>
 </div>
 <p>我们可以变换张量程序中的循环，使得在新循环下内存访问的模式对缓存更加友好。我们尝试下面的调度。</p>
@@ -582,15 +582,15 @@ API 构造初始的张量程序，并编译执行它。</p>
                     <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tir</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span>
 
-<span class="n">after</span> <span class="n">transformation</span><span class="p">:</span> <span class="mf">0.392352</span>
+<span class="n">after</span> <span class="n">transformation</span><span class="p">:</span> <span class="mf">0.216680</span>
 </pre></div>
 </div>
 <p>尝试改变 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>
 的值，看看你能得到怎样的性能。在实际情况中，我们会利用一个自动化的系统在一个可能的变换空间中搜索找到最优的程序变换。</p>
 </div>
 </div>
-<div class="section" id="id11">
-<h2><span class="section-number">2.4. </span>总结<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="id12">
+<h2><span class="section-number">2.4. </span>总结<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>元张量函数表示机器学习模型计算中的单个单元计算。</p>
 <ul>
@@ -623,16 +623,16 @@ API 构造初始的张量程序，并编译执行它。</p>
 <li><a class="reference internal" href="#id5">2.2.1. 张量程序抽象中的其它结构</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#tensor-program-transformation-in-action">2.3. Tensor Program Transformation in Action</a><ul>
-<li><a class="reference internal" href="#id6">2.3.1. 安装相关的包</a></li>
-<li><a class="reference internal" href="#id7">2.3.2. 构造张量程序</a></li>
-<li><a class="reference internal" href="#id8">2.3.3. 编译与运行</a></li>
-<li><a class="reference internal" href="#id9">2.3.4. 张量程序变换</a></li>
+<li><a class="reference internal" href="#id6">2.3. 张量程序变换实践</a><ul>
+<li><a class="reference internal" href="#id7">2.3.1. 安装相关的包</a></li>
+<li><a class="reference internal" href="#id8">2.3.2. 构造张量程序</a></li>
+<li><a class="reference internal" href="#id9">2.3.3. 编译与运行</a></li>
+<li><a class="reference internal" href="#id10">2.3.4. 张量程序变换</a></li>
 <li><a class="reference internal" href="#tensor-expression-te">2.3.5. 通过张量表达式（Tensor Expression，TE）构造张量程序</a></li>
-<li><a class="reference internal" href="#id10">2.3.6. 变换一个矩阵乘法程序</a></li>
+<li><a class="reference internal" href="#id11">2.3.6. 变换一个矩阵乘法程序</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id11">2.4. 总结</a></li>
+<li><a class="reference internal" href="#id12">2.4. 总结</a></li>
 </ul>
 </li>
 </ul>
