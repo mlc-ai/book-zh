@@ -288,7 +288,7 @@ Python 程序，而是对应一个机器学习编译过程中的张量程序。T
 <span class="n">func</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">packed_func</span><span class="o">.</span><span class="n">PackedFunc</span> <span class="n">at</span> <span class="mh">0x7f9bfa7f7d60</span><span class="o">&gt;</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">packed_func</span><span class="o">.</span><span class="n">PackedFunc</span> <span class="n">at</span> <span class="mh">0x7f1bf94c0ef0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
@@ -538,7 +538,7 @@ API 构造初始的张量程序，并编译执行它。</p>
                     <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tir</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span>
 
-<span class="n">Baseline</span><span class="p">:</span> <span class="mf">3.934837</span>
+<span class="n">Baseline</span><span class="p">:</span> <span class="mf">3.656068</span>
 </pre></div>
 </div>
 <p>我们可以变换张量程序中的循环，使得在新循环下内存访问的模式对缓存更加友好。我们尝试下面的调度。</p>
@@ -582,7 +582,7 @@ API 构造初始的张量程序，并编译执行它。</p>
                     <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tir</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span>
 
-<span class="n">after</span> <span class="n">transformation</span><span class="p">:</span> <span class="mf">0.216680</span>
+<span class="n">after</span> <span class="n">transformation</span><span class="p">:</span> <span class="mf">0.219700</span>
 </pre></div>
 </div>
 <p>尝试改变 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>
