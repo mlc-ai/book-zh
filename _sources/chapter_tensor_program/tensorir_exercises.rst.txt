@@ -234,7 +234,7 @@ NumPy 的结果进行比较。
    rt_lib["conv"](data_tvm, weight_tvm, conv_tvm)
    np.testing.assert_allclose(conv_tvm.numpy(), conv_torch, rtol=1e-5)
 
-第二节: 如何变换 TensorIR
+第二节：如何变换 TensorIR
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 在讲座中，我们了解到 TensorIR
@@ -373,7 +373,7 @@ NumPy 的结果进行比较。
 
 
 
-联系 3：变换批量矩阵乘法程序
+练习 3：变换批量矩阵乘法程序
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 现在，让我们回到 ``bmm_relu`` 练习。首先，让我们看看 ``bmm`` 的定义： -
