@@ -184,12 +184,11 @@ For 循环迭代
 .. code:: python
 
    # TensorIR
+   for i, j, k in T.grid(128, 128, 128):
+   # numpy
    for i in range(128):
        for j in range(128):
            for k in range(128):
-
-   # numpy
-   for i, j, k in T.grid(128, 128, 128):
 
 计算块
 ^^^^^^
@@ -1073,8 +1072,8 @@ Skylake）时，我们需要相应地调整
 .. parsed-literal::
     :class: output
 
-    Time cost of MyModule 0.00330078 sec
-    Time cost of transformed sch.mod 0.00113761 sec
+    Time cost of MyModule 0.00330222 sec
+    Time cost of transformed sch.mod 0.00113711 sec
 
 
 两个代码之间的运行时间差异很有意思。让我们快速分析一下影响性能的可能因素。
@@ -1363,7 +1362,7 @@ Skylake）时，我们需要相应地调整
 .. parsed-literal::
     :class: output
 
-    Time cost of transformed mod_transformed 0.000572749 sec
+    Time cost of transformed mod_transformed 0.000573819 sec
 
 
 
