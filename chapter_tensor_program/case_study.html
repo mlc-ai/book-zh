@@ -176,8 +176,11 @@ MLC 课程安装一个包装好的版本。</p>
 <div class="figure align-default">
 <img alt="../_images/tensor_func_linear_rule.png" src="../_images/tensor_func_linear_rule.png" />
 </div>
-<p>在开始今天这一节之前，让我们回忆机器学习编译过程的关键原则。大多数的机器学习编译可以被视为张量函数之间的变换。在接下来的内容中我们主要想回答的以下几个问题：
-- 什么是表示张量函数可能的抽象？ - 什么是张量函数之间可能的变换？</p>
+<p>在开始今天这一节之前，让我们回忆机器学习编译过程的关键原则。大多数的机器学习编译可以被视为张量函数之间的变换。在接下来的内容中我们主要想回答的以下几个问题：</p>
+<ul class="simple">
+<li><p>什么是表示张量函数可能的抽象？</p></li>
+<li><p>什么是张量函数之间可能的变换？</p></li>
+</ul>
 <p>在这里我们将聚焦于元张量函数，部分讨论这些问题。</p>
 </div>
 <div class="section" id="id3">
@@ -248,8 +251,12 @@ ReLU 激活层。首先，我们使用如下 NumPy 中的数组计算实现这�
 </div>
 <p>上面的示例代码展示了我们如何在<strong>幕后</strong>实现 <code class="docutils literal notranslate"><span class="pre">mm_relu</span></code>。当然，由于
 Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
-代码包含我们将在这些计算的实际实现中使用的所有可能元素。 -
-多维缓冲区（数组）。 - 在数组维度上的循环。 - 在循环下执行的计算语句。</p>
+代码包含我们将在这些计算的实际实现中使用的所有可能元素。</p>
+<ul class="simple">
+<li><p>多维缓冲区（数组）。</p></li>
+<li><p>在数组维度上的循环。</p></li>
+<li><p>在循环下执行的计算语句。</p></li>
+</ul>
 <p>在看过低级 NumPy 示例后，现在我们准备介绍 TensorIR。下面的代码块展示了
 <code class="docutils literal notranslate"><span class="pre">mm_relu</span></code> 的 TensorIR 实现。这里的代码是用一种名为 TVMScript
 的语言实现的，它是一种嵌入在 Python AST 中的特定领域方言。</p>
@@ -351,10 +358,14 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">block_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="p">[</span><span class="n">axis_type</span><span class="p">]([</span><span class="n">axis_range</span><span class="p">],</span> <span class="p">[</span><span class="n">mapped_value</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>这三行包含以下信息： - 定义了 <code class="docutils literal notranslate"><span class="pre">vi</span></code>、<code class="docutils literal notranslate"><span class="pre">vj</span></code>、<code class="docutils literal notranslate"><span class="pre">vk</span></code>
-应被绑定到的位置（在本例中为 <code class="docutils literal notranslate"><span class="pre">i</span></code>、<code class="docutils literal notranslate"><span class="pre">j</span></code> 和 <code class="docutils literal notranslate"><span class="pre">k</span></code>）； - 声明了
-<code class="docutils literal notranslate"><span class="pre">vi、``vj</span></code>、<code class="docutils literal notranslate"><span class="pre">vk</span></code> 的原始范围（<code class="docutils literal notranslate"><span class="pre">T.axis.spatial(128,</span> <span class="pre">i)</span></code>
-中的 <code class="docutils literal notranslate"><span class="pre">128</span></code>）； - 声明了块轴的属性（<code class="docutils literal notranslate"><span class="pre">spatial</span></code>, <code class="docutils literal notranslate"><span class="pre">reduce</span></code>）。</p>
+<p>这三行包含以下信息：</p>
+<ul class="simple">
+<li><p>定义了 <code class="docutils literal notranslate"><span class="pre">vi</span></code>、<code class="docutils literal notranslate"><span class="pre">vj</span></code>、<code class="docutils literal notranslate"><span class="pre">vk</span></code> 应被绑定到的位置（在本例中为
+<code class="docutils literal notranslate"><span class="pre">i</span></code>、<code class="docutils literal notranslate"><span class="pre">j</span></code> 和 <code class="docutils literal notranslate"><span class="pre">k</span></code>）；</p></li>
+<li><p>声明了 <code class="docutils literal notranslate"><span class="pre">vi</span></code>、<code class="docutils literal notranslate"><span class="pre">vj</span></code>、<code class="docutils literal notranslate"><span class="pre">vk</span></code>
+的原始范围（<code class="docutils literal notranslate"><span class="pre">T.axis.spatial(128,</span> <span class="pre">i)</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">128</span></code>）；</p></li>
+<li><p>声明了块轴的属性（<code class="docutils literal notranslate"><span class="pre">spatial</span></code>, <code class="docutils literal notranslate"><span class="pre">reduce</span></code>）。</p></li>
+</ul>
 <p>我们一一浏览这些属性。首先，就边界关系而言，<code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">=</span> <span class="pre">T.axis.spatial(128,</span> <span class="pre">i)</span></code>
 有效地蕴含了 <code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">=</span> <span class="pre">i</span></code>。<code class="docutils literal notranslate"><span class="pre">[axis_range]</span></code> 值提供了 <code class="docutils literal notranslate"><span class="pre">[block_axis]</span></code>
 的预期范围。例如，<code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">=</span> <span class="pre">T.axis.spatial(128,</span> <span class="pre">i)</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">128</span></code> 表明
@@ -408,7 +419,7 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">,</span> <span class="n">vk</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SSR&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>is equivalent to</p>
+<p>相当于</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span><span class="n">range_of_i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
 <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span><span class="n">range_of_j</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
 <span class="n">vk</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">range_of_k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
@@ -493,9 +504,12 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 <div class="section" id="id10">
 <h3><span class="section-number">2.4.3.8. </span>章节检查点<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <p>到目前为止，我们一同看过了一个 TensorIR
-程序示例，并涵盖了大部分元素，包括： -
-参数和中间临时内存中的缓冲区声明； - For 循环迭代； -
-<strong>块</strong>和块轴属性。</p>
+程序示例，并涵盖了大部分元素，包括：</p>
+<ul class="simple">
+<li><p>参数和中间临时内存中的缓冲区声明；</p></li>
+<li><p>For 循环迭代；</p></li>
+<li><p><strong>块</strong>和块轴属性。</p></li>
+</ul>
 <p>在本节中，我们介绍了一个 TensorIR
 示例，它涵盖了机器学习编译中最常见的元素。</p>
 <p>TensorIR
@@ -530,8 +544,11 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 </pre></div>
 </div>
 <p>上面的代码块显示了 <code class="docutils literal notranslate"><span class="pre">mm_relu</span></code>
-的一个稍微不同的变体。它与原始程序的不同是 - 我们用两个循环 <code class="docutils literal notranslate"><span class="pre">j0</span></code> 和
-<code class="docutils literal notranslate"><span class="pre">j1</span></code> 替换了 <code class="docutils literal notranslate"><span class="pre">j</span></code> 循环； - 迭代顺序略有变化。</p>
+的一个稍微不同的变体。它与原始程序的不同是</p>
+<ul class="simple">
+<li><p>我们用两个循环 <code class="docutils literal notranslate"><span class="pre">j0</span></code> 和 <code class="docutils literal notranslate"><span class="pre">j1</span></code> 替换了 <code class="docutils literal notranslate"><span class="pre">j</span></code> 循环；</p></li>
+<li><p>迭代顺序略有变化。</p></li>
+</ul>
 <p>为了获得
 <code class="docutils literal notranslate"><span class="pre">lnumpy_mm_relu_v2</span></code>，我们必须重写一个新函数（或手动复制粘贴和编辑）。TensorIR
 引入了一个名为 Schedule 的辅助结构，它允许我们务实地做到这一点。</p>
@@ -1065,8 +1082,8 @@ Skylake）时，我们需要相应地调整
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time cost of transformed sch.mod </span><span class="si">%g</span><span class="s2"> sec&quot;</span> <span class="o">%</span> <span class="n">f_timer_after</span><span class="p">(</span><span class="n">a_nd</span><span class="p">,</span> <span class="n">b_nd</span><span class="p">,</span> <span class="n">c_nd</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">MyModule</span> <span class="mf">0.00330222</span> <span class="n">sec</span>
-<span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">sch</span><span class="o">.</span><span class="n">mod</span> <span class="mf">0.00113711</span> <span class="n">sec</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">MyModule</span> <span class="mf">0.00330398</span> <span class="n">sec</span>
+<span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">sch</span><span class="o">.</span><span class="n">mod</span> <span class="mf">0.00113884</span> <span class="n">sec</span>
 </pre></div>
 </div>
 <p>两个代码之间的运行时间差异很有意思。让我们快速分析一下影响性能的可能因素。
@@ -1322,7 +1339,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Code</span><span class="p">(</span><span class="n">mod_transformed</span><span class="o">.</span><span class="n">script</span><span class="p">(),</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">mod_transformed</span> <span class="mf">0.000573819</span> <span class="n">sec</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">mod_transformed</span> <span class="mf">0.000581907</span> <span class="n">sec</span>
 </pre></div>
 </div>
 <style>pre { line-height: 125%; }
