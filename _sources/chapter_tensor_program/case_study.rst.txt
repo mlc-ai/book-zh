@@ -9,6 +9,10 @@ TensorIR: 张量程序抽象案例研究
 （一个开源的机器学习编译框架）中一些正在持续开发的部分。我们提供了下面的命令用于为
 MLC 课程安装一个包装好的版本。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: bash
 
    python3 -m  pip install mlc-ai-nightly -f https://mlc.ai/wheels
@@ -33,6 +37,10 @@ MLC 课程安装一个包装好的版本。
 现在我们已经准备好学习一个特定的张量程序抽象的实例：TensorIR。 TensorIR
 是标准机器学习编译框架 Apache TVM 中使用的张量程序抽象。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     import numpy as np
@@ -52,6 +60,10 @@ B，我们进行如下两步的张量计算。
 
 上面的计算很像在我们神经网络中经常看到的典型的元张量函数：一个线性层与一个
 ReLU 激活层。首先，我们使用如下 NumPy 中的数组计算实现这两个操作。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -77,6 +89,10 @@ ReLU 激活层。首先，我们使用如下 NumPy 中的数组计算实现这�
 大多数现实世界的部署解决方案都将分配与计算分开处理。特定的库使用不同形式的循环和算术计算来执行计算。当然首先它们是使用诸如
 ``C`` 之类的低级语言实现的。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     def lnumpy_mm_relu(A: np.ndarray, B: np.ndarray, C: np.ndarray):
@@ -100,6 +116,10 @@ ReLU 激活层。首先，我们使用如下 NumPy 中的数组计算实现这�
 无论如何，这确实是实现 ``mm_relu``
 的方式之一。我们可以通过将我们的结果与使用数组计算的原始结果进行比较来验证代码的正确性。我们将在本节的后面部分回到这里，并重新讨论其他可能的方法。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     c_np = np.empty((128, 128), dtype=dtype)
@@ -117,6 +137,10 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 在看过低级 NumPy 示例后，现在我们准备介绍 TensorIR。下面的代码块展示了
 ``mm_relu`` 的 TensorIR 实现。这里的代码是用一种名为 TVMScript
 的语言实现的，它是一种嵌入在 Python AST 中的特定领域方言。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -156,6 +180,10 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 
 首先，让我们看一下函数参数。函数参数对应于 NumPy 函数上的同一组参数。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
    # TensorIR
@@ -173,6 +201,10 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 
 同样，TensorIR 在中间结果分配中也使用了缓冲区类型。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
    # TensorIR
@@ -185,6 +217,10 @@ For 循环迭代
 
 循环迭代也有直接对应关系。\ ``T.grid`` 是 TensorIR
 中的语法糖，供我们书写多个嵌套的迭代器。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -199,6 +235,10 @@ For 循环迭代
 ^^^^^^
 
 主要区别之一来自计算语句。TensorIR 包含一个名为 ``T.block`` 的额外结构。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -219,6 +259,10 @@ For 循环迭代
 
 **块** 是 TensorIR 中的基本计算单位。值得注意的是，该块包含比普通 NumPy
 代码更多的信息。一个块包含一组块轴（\ ``vi、vj、vk``\ ）和围绕它们定义的计算。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -279,6 +323,10 @@ For 循环迭代
 块轴信息还提供了额外的属性，帮助我们验证用于执行计算的外部循环的正确性。例如，下面的代码块会导致错误，因为循环需要一个大小为
 128 的迭代器，但我们只将它绑定到一个大小为 127 的 for 循环。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
    # wrong program due to loop and block iteration mismatch
@@ -297,12 +345,20 @@ For 循环迭代
 在每个块轴直接映射到外部循环迭代器的情况下，我们可以使用
 ``T.axis.remap`` 在一行中声明所有块轴。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
    # SSR means the properties of each axes are "spatial", "spatial", "reduce"
    vi, vj, vk = T.axis.remap("SSR", [i, j, k])
 
 相当于
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -311,6 +367,10 @@ For 循环迭代
    vk = T.axis.reduce(range_of_k, k)
 
 所以我们也可以编写如下程序。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -341,6 +401,10 @@ For 循环迭代
 
 函数属性信息包含关于函数的额外信息。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
    T.func_attr({"global_symbol": "mm_relu", "tir.noalias": True})
@@ -354,12 +418,20 @@ For 循环迭代
 ``@tvm.script.ir_module`` 表示 ``MyModule`` 是一个 IRModule。IRModule
 是在机器学习编译中保存张量函数集合的容器对象。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     type(MyModule)
 
 
 
+
+.. raw:: latex
+
+   \diilbookstyleoutputcell
 
 .. parsed-literal::
     :class: output
@@ -368,12 +440,20 @@ For 循环迭代
 
 
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     type(MyModule["mm_relu"])
 
 
 
+
+.. raw:: latex
+
+   \diilbookstyleoutputcell
 
 .. parsed-literal::
     :class: output
@@ -385,6 +465,10 @@ For 循环迭代
 到目前为止，我们只看到包含单个张量函数的 IRModules。
 机器学习编译过程中的一个 IRModule 可以包含多个张量函数。
 以下代码块显示了具有两个函数的 IRModule 示例。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -439,6 +523,10 @@ TensorIR
 我们将讨论性能背后的原因以及如何在以后的内容中利用这些变体。
 在本节中，让我们关注使用变换获得不同实现变体的能力。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     def lnumpy_mm_relu_v2(A: np.ndarray, B: np.ndarray, C: np.ndarray):
@@ -470,6 +558,10 @@ TensorIR
 引入了一个名为 Schedule 的辅助结构，它允许我们务实地做到这一点。
 
 为了提醒我们自己，让我们再看看当前的 ``MyModule`` 内容。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -587,11 +679,19 @@ TensorIR
 现在我们准备好尝试代码变换。我们首先创建一个以给定的 ``MyModule``
 作为输入的 Schedule 辅助类。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     sch = tvm.tir.Schedule(MyModule)
 
 然后我们执行以下操作以获得对块 ``Y`` 和相应循环的引用。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -604,11 +704,19 @@ TensorIR
 ``j`` 不再存在”的错误。如果发生这种情况，你可以从头（创建 ``sch``
 的位置）开始再次运行。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     j0, j1 = sch.split(j, factors=[None, 4])
 
 我们可以查看存储在 ``sch.mod`` 中的变换结果。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -725,6 +833,10 @@ TensorIR
 
 在变换的第一步之后，我们创建了两个新的循环，\ ``j_0`` 和
 ``j_1``\ ，分别对应范围 32 和 4。下一步是重新排序这两个循环。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -847,6 +959,10 @@ TensorIR
 
 在本节中，我们将继续进行另外两步变换以得到另一个变体。首先，我们使用名为
 ``reverse_compute_at`` 的原语将块 ``C`` 移动到 ``Y`` 的内循环里。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -980,6 +1096,10 @@ TensorIR
 
 最终变换后的代码类似于以下低级 NumPy 代码。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     def lnumpy_mm_relu_v3(A: np.ndarray, B: np.ndarray, C: np.ndarray):
@@ -1029,11 +1149,19 @@ IRModule 中得到的程序。
 Skylake）时，我们需要相应地调整
 ``target``\ 。当我们开始部署到这些环境时，我们将讨论不同的目标选择。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     rt_lib = tvm.build(MyModule, target="llvm")
 
 然后，我们将创建三个用于保存输入和输出的 TVM NDArray。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -1045,6 +1173,10 @@ Skylake）时，我们需要相应地调整
 
 
 
+.. raw:: latex
+
+   \diilbookstyleoutputcell
+
 .. parsed-literal::
     :class: output
 
@@ -1055,6 +1187,10 @@ Skylake）时，我们需要相应地调整
 最后，我们可以从 ``rt_lib``
 中获取可运行函数，并通过传递三个数组参数来执行它。我们可以进一步运行验证来检查代码差异。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     func_mm_relu = rt_lib["mm_relu"]
@@ -1063,6 +1199,10 @@ Skylake）时，我们需要相应地调整
     np.testing.assert_allclose(c_mm_relu, c_nd.numpy(), rtol=1e-5)
 
 我们已经构建并运行了原始的 ``MyModule``\ 。 我们还可以构建变换后的程序。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -1073,6 +1213,10 @@ Skylake）时，我们需要相应地调整
 最后，我们可以比较一下两者的时间差。 ``time_evaluator``
 是一个辅助的测试函数，可用于比较不同生成函数的运行性能。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     f_timer_before = rt_lib.time_evaluator("mm_relu", tvm.cpu())
@@ -1081,15 +1225,23 @@ Skylake）时，我们需要相应地调整
     print("Time cost of transformed sch.mod %g sec" % f_timer_after(a_nd, b_nd, c_nd).mean)
 
 
+.. raw:: latex
+
+   \diilbookstyleoutputcell
+
 .. parsed-literal::
     :class: output
 
-    Time cost of MyModule 0.003054 sec
-    Time cost of transformed sch.mod 0.00100462 sec
+    Time cost of MyModule 0.00772273 sec
+    Time cost of transformed sch.mod 0.00300191 sec
 
 
 两个代码之间的运行时间差异很有意思。让我们快速分析一下影响性能的可能因素。
 首先，让我们回忆原始代码的两种变体。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -1203,6 +1355,10 @@ Skylake）时，我们需要相应地调整
 
 
 
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -1350,6 +1506,10 @@ Skylake）时，我们需要相应地调整
 
 作为练习，尝试不同的 ``j_factor`` 选择，看看它们如何影响代码的性能。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     def transform(mod, jfactor):
@@ -1371,10 +1531,14 @@ Skylake）时，我们需要相应地调整
     IPython.display.Code(mod_transformed.script(), language="python")
 
 
+.. raw:: latex
+
+   \diilbookstyleoutputcell
+
 .. parsed-literal::
     :class: output
 
-    Time cost of transformed mod_transformed 0.000505667 sec
+    Time cost of transformed mod_transformed 0.00188763 sec
 
 
 
@@ -1516,6 +1680,10 @@ MLC 流程中。
 张量表达式 (TE) 是一种特定领域的语言，它通过 API
 之类的表达式描述一系列计算。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     from tvm import te
@@ -1530,6 +1698,10 @@ MLC 流程中。
 ``fcompute`` 函数描述了对于给定的索引 ``(i, j)`` 我们要如何计算元素
 ``Y[i, j]`` 的值。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
    lambda i, j: te.sum(A[i, k] * B[k, j], axis=k)
@@ -1538,6 +1710,10 @@ MLC 流程中。
 :math:`Y_{ij} = \sum_k A_{ik} B_{kj}`\ 。在描述计算之后，我们可以通过传递我们感兴趣的相关参数来创建一个
 TensorIR
 函数。在这种特殊情况下，我们想要创建一个具有两个输入参数（\ ``A``\ ，\ ``B``\ ）和一个输出参数（\ ``C``\ ）的函数。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 

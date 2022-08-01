@@ -2,6 +2,10 @@
 TensorIR 练习
 -------------
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     import IPython
@@ -22,11 +26,19 @@ TensorIR 函数。
 
 首先，让我们尝试使用 Numpy 编写一个逐位相加函数。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     # init data
     a = np.arange(16).reshape(4, 4)
     b = np.arange(16, 0, -1).reshape(4, 4)
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -36,6 +48,10 @@ TensorIR 函数。
 
 
 
+
+.. raw:: latex
+
+   \diilbookstyleoutputcell
 
 .. parsed-literal::
     :class: output
@@ -55,6 +71,10 @@ Python 实现（具有元素访问和操作的循环的标准）。
 0。我们需要在我们的实现中编写或初始化它，这对于归约运算符（例如
 ``matmul`` 和 ``conv``\ ）很重要。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     # low-level numpy version
@@ -69,6 +89,10 @@ Python 实现（具有元素访问和操作的循环的标准）。
 
 
 
+.. raw:: latex
+
+   \diilbookstyleoutputcell
+
 .. parsed-literal::
     :class: output
 
@@ -81,6 +105,10 @@ Python 实现（具有元素访问和操作的循环的标准）。
 
 现在，让我们更进一步：将低级 NumPy 实现转换为 TensorIR，并将结果与来自
 NumPy 的结果进行比较。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -112,11 +140,19 @@ NumPy 的结果进行比较。
 
 请编写一个 TensorIR 函数，将两个数组以广播的方式相加。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     # init data
     a = np.arange(16).reshape(4, 4)
     b = np.arange(4, 0, -1).reshape(4)
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -126,6 +162,10 @@ NumPy 的结果进行比较。
 
 
 
+
+.. raw:: latex
+
+   \diilbookstyleoutputcell
 
 .. parsed-literal::
     :class: output
@@ -138,6 +178,10 @@ NumPy 的结果进行比较。
 
 
 请完成以下 IRModule ``MyAdd`` 并运行代码以检查你的实现。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -175,12 +219,20 @@ NumPy 的结果进行比较。
 
 在练习中，我们选择了一个小而简单的情况，即 ``stride=1, padding=0``\ 。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     N, CI, H, W, CO, K = 1, 1, 8, 8, 2, 3
     OUT_H, OUT_W = H - K + 1, W - K + 1
     data = np.arange(N*CI*H*W).reshape(N, CI, H, W)
     weight = np.arange(CO*CI*K*K).reshape(CO, CI, K, K)
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -195,6 +247,10 @@ NumPy 的结果进行比较。
 
 
 
+
+.. raw:: latex
+
+   \diilbookstyleoutputcell
 
 .. parsed-literal::
     :class: output
@@ -216,6 +272,10 @@ NumPy 的结果进行比较。
 
 
 请完成以下 IRModule ``MyConv`` 并运行代码以检查您的实现。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -247,6 +307,10 @@ NumPy 的结果进行比较。
 
 首先，我们介绍一些新的原语：\ ``parallel``\ 、\ ``vectorize`` 和
 ``unroll``\ 。这三个原语被应用于循环上，指示循环应当如何执行。这是示例：
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -383,6 +447,10 @@ NumPy 的结果进行比较。
 现在是你为 ``bmm_relu`` 编写 TensorIR 的时候了。我们提供 lnumpy
 函数作为提示：
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
     def lnumpy_mm_relu_v2(A: np.ndarray, B: np.ndarray, C: np.ndarray):
@@ -398,6 +466,10 @@ NumPy 的结果进行比较。
             for i in range(128):
                 for j in range(128):
                     C[n, i, j] = max(Y[n, i, j], 0)
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -415,6 +487,10 @@ NumPy 的结果进行比较。
 
 在本练习中，让我们专注于将原始程序变换为特定目标。请注意，由于硬件不同，目标程序可能不是最好的程序。但是这个练习旨在让你了解如何将程序变换为想要的程序。
 这是目标程序：
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -446,6 +522,10 @@ NumPy 的结果进行比较。
                             C[n, i, j] = T.max(Y[n, i, j], T.float32(0))
 
 你的任务是将原始程序转换为目标程序。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
@@ -487,6 +567,10 @@ NumPy 的结果进行比较。
 ``assert_structural_equal``\ 。请注意，此步骤是本练习中的可选步骤。
 如果您将程序\ **朝着**\ 目标转变并获得性能提升，这就足够了。
 
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
 .. code:: python
 
    tvm.ir.assert_structural_equal(sch.mod, TargetModule)
@@ -496,6 +580,10 @@ NumPy 的结果进行比较。
 ^^^^^^^^^^
 
 最后，我们可以评估变换后的程序的性能。
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
 
 .. code:: python
 
