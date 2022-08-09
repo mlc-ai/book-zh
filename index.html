@@ -113,6 +113,7 @@ Show Source
 <li class="toctree-l1"><a class="reference internal" href="chapter_end_to_end/index.html">3. 端到端模型执行</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter_auto_program_optimization/index.html">4. 自动程序优化</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter_integration/index.html">5. 与机器学习框架的整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_gpu_acceleration/index.html">6. GPU 硬件加速</a></li>
 </ul>
 
             </nav>
@@ -152,6 +153,7 @@ Show Source
 <li class="toctree-l1"><a class="reference internal" href="chapter_end_to_end/index.html">3. 端到端模型执行</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter_auto_program_optimization/index.html">4. 自动程序优化</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter_integration/index.html">5. 与机器学习框架的整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_gpu_acceleration/index.html">6. GPU 硬件加速</a></li>
 </ul>
 
             </nav>
@@ -166,7 +168,7 @@ Show Source
   <div class="section" id="id1">
 <h1>机器学习编译<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
 <p>随着人工智能应用在我们的日常生活中变得越来越普遍，目前存在的挑战是如何在不同的生产环境中部署最新的人工智能模型。模型和部署环境的组合爆炸给训练和推理部署带来了巨大的挑战。此外，目前落地的模型也提出了更多的要求，例如减少软件依赖、全面的模型覆盖、利用新硬件进行加速、减少内存占用，以及更强的可扩展性。</p>
-<p>这些模型训练和推理问题，涉及机器学习编程范式、基于学习的搜索算法、编译优化以及计算运行时。这些话题的组合生成了一个全新主题——机器学习编译，并且该方向正在不断持续发展。在本课程中，我们讲按照其中的关键元素，系统地研究这一新兴领域的关键要素。我们将学习一些核心的概念，用以表示机器学习程序、自动优化技术，以及在端到端机器学习部署中优化环境依赖、内存和性能的方法。</p>
+<p>这些模型训练和推理问题，涉及机器学习编程范式、基于学习的搜索算法、编译优化以及计算运行时。这些话题的组合生成了一个全新主题——机器学习编译，并且该方向正在不断持续发展。在本课程中，我们将按照其中的关键元素，系统地研究这一新兴领域的关键要素。我们将学习一些核心的概念，用以表示机器学习程序、自动优化技术，以及在端到端机器学习部署中优化环境依赖、内存和性能的方法。</p>
 <p>本材料作为 <a class="reference external" href="https://mlc.ai/summer22-zh">MLC课程</a>
 （<a class="reference external" href="https://mlc.ai/summer22">英文原版</a>）的课程材料，随着课程的推进我们会同步更新。</p>
 <div class="toctree-wrapper compound">
@@ -219,6 +221,18 @@ Show Source
 <li class="toctree-l2"><a class="reference internal" href="chapter_integration/index.html#id5">5.6. 备注：翻译成高层算子</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter_integration/index.html#id6">5.7. 讨论</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter_integration/index.html#id7">5.8. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_gpu_acceleration/index.html">6. GPU 硬件加速</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id1">6.1. 安装环境</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id2">6.2. 前言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id3">6.3. 准备工作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id4">6.4. GPU 体系结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id6">6.5. 示例：窗口求和</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id8">6.6. 矩阵乘法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#shared-memory-blocking">6.7. 共享内存分块 (Shared Memory Blocking)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id9">6.8. 利用自动程序优化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_gpu_acceleration/index.html#id10">6.9. 小结</a></li>
 </ul>
 </li>
 </ul>

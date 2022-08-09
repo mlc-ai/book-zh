@@ -123,7 +123,7 @@
 .. parsed-literal::
     :class: output
 
-    Class: Coat
+    Class: Shirt
 
 
 下载模型参数
@@ -188,10 +188,10 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    [[-21.208994  -12.823092    3.329767   -5.646279   10.836172   -7.8595166
-      -11.125176  -32.495598   -9.090575  -34.61753  ]]
-    [4]
-    NumPy-MLP Prediction: Coat
+    [[  7.917924 -18.381292 -28.935932  -6.014268 -26.902687  -8.399153
+       -4.641385 -37.319897 -17.493574 -42.01189 ]]
+    [0]
+    NumPy-MLP Prediction: T-shirt/top
 
 
 上面的示例代码显示了利用高层NumPy数组操作，执行端到端模型执行的过程。
@@ -274,7 +274,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy MLP Prediction: Coat
+    Low-level Numpy MLP Prediction: T-shirt/top
 
 
 在 TVMScript 中构建端到端 IRModule
@@ -504,7 +504,7 @@ free**\ 的。
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy with CallTIR Prediction: Coat
+    Low-level Numpy with CallTIR Prediction: T-shirt/top
 
 
 实际上，最底层的实现会有显式的内存分配，所以\ ``call_tir``\ 主要是为了让我们在生成实际实现之前继续做一些高层的转换。
@@ -670,6 +670,16 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
     .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="nd">@tvm</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">ir_module</span>
     <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+        <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
+        <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">128</span><span class="p">,),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">10</span><span class="p">,),</span> <span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="c1"># block 0</span>
+            <span class="k">with</span> <span class="n">R</span><span class="o">.</span><span class="n">dataflow</span><span class="p">():</span>
+                <span class="n">lv0</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_tir</span><span class="p">(</span><span class="n">linear0</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+                <span class="n">lv1</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_tir</span><span class="p">(</span><span class="n">relu0</span><span class="p">,</span> <span class="p">(</span><span class="n">lv0</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_tir</span><span class="p">(</span><span class="n">linear1</span><span class="p">,</span> <span class="p">(</span><span class="n">lv1</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+                <span class="n">R</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">out</span>
+    
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
         <span class="k">def</span> <span class="nf">relu0</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">Y</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># function attr dict</span>
@@ -682,38 +692,6 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    
-        <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">linear1</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">W</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">Z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># function attr dict</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;global_symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;linear1&quot;</span><span class="p">,</span> <span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
-            <span class="c1"># body</span>
-            <span class="c1"># with T.block(&quot;root&quot;)</span>
-            <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
-                <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">):</span>
-                    <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">,</span> <span class="n">vk</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SSR&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
-                    <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">])</span>
-                    <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                    <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-                <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
-                    <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
-                    <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">])</span>
-                    <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                    <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
-    
-        <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-        <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">128</span><span class="p">,),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">((</span><span class="mi">10</span><span class="p">,),</span> <span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="c1"># block 0</span>
-            <span class="k">with</span> <span class="n">R</span><span class="o">.</span><span class="n">dataflow</span><span class="p">():</span>
-                <span class="n">lv0</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_tir</span><span class="p">(</span><span class="n">linear0</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-                <span class="n">lv1</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_tir</span><span class="p">(</span><span class="n">relu0</span><span class="p">,</span> <span class="p">(</span><span class="n">lv0</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-                <span class="n">out</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_tir</span><span class="p">(</span><span class="n">linear1</span><span class="p">,</span> <span class="p">(</span><span class="n">lv1</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-                <span class="n">R</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">out</span>
     
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
         <span class="k">def</span> <span class="nf">linear0</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">W</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">Z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -731,6 +709,28 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
                         <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
+                    <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">])</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
+                    <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
+    
+        <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
+        <span class="k">def</span> <span class="nf">linear1</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">W</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span> <span class="n">Z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># function attr dict</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;global_symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;linear1&quot;</span><span class="p">,</span> <span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+            <span class="c1"># body</span>
+            <span class="c1"># with T.block(&quot;root&quot;)</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">):</span>
+                    <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">,</span> <span class="n">vk</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SSR&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">])</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
+                    <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
                     <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">])</span>
@@ -819,8 +819,8 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    [[-21.208992 -12.823082   3.329768  -5.646278  10.836173  -7.859509
-      -11.125184 -32.495605  -9.09057  -34.617535]]
+    [[  7.9179235 -18.381296  -28.93594    -6.0142646 -26.902685   -8.399149
+       -4.6413856 -37.319897  -17.493578  -42.011894 ]]
 
 
 ``main``
@@ -844,7 +844,7 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    MyModule Prediction: Coat
+    MyModule Prediction: T-shirt/top
 
 
 在环境中集成现有运行库
@@ -967,7 +967,7 @@ Build and Run
 .. parsed-literal::
     :class: output
 
-    MyModuleWithExternCall Prediction: Coat
+    MyModuleWithExternCall Prediction: T-shirt/top
 
 
 Mixing TensorIR Code and Libraries
@@ -1045,7 +1045,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 .. parsed-literal::
     :class: output
 
-    MyModuleMixture Prediction: Coat
+    MyModuleMixture Prediction: T-shirt/top
 
 
 将参数绑定到 IRModule
@@ -1210,7 +1210,7 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 .. parsed-literal::
     :class: output
 
-    MyModuleWithParams Prediction: Coat
+    MyModuleWithParams Prediction: T-shirt/top
 
 
 讨论

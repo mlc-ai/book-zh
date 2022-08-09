@@ -691,8 +691,8 @@ IRModule。
     -------------  ------  ---------------------------------------------------------  -----------  --------
     placeholder    x       x                                                          ()           {}
     get_attr       weight  weight                                                     ()           {}
-    call_function  matmul  <built-in method matmul of type object at 0x7f824deca980>  (x, weight)  {}
-    call_function  relu    <built-in method relu of type object at 0x7f824deca980>    (matmul,)    {}
+    call_function  matmul  <built-in method matmul of type object at 0x7f232f6b1980>  (x, weight)  {}
+    call_function  relu    <built-in method relu of type object at 0x7f232f6b1980>    (matmul,)    {}
     output         output  output                                                     (relu,)      {}
 
 
@@ -929,7 +929,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    Class: Trouser
+    Class: T-shirt/top
 
 
 .. raw:: latex
@@ -999,7 +999,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    Torch Prediction: Trouser
+    Torch Prediction: T-shirt/top
 
 
 让我们尝试通过为相应的 ``nn.Module`` 定义映射函数来从 FX 转换。
@@ -1053,18 +1053,31 @@ API 做到这一点。
 
     @tvm.script.ir_module
     class Module:
+        @R.function
+        def main(x: Tensor((1, 784), "float32")) -> Tensor(None, "float32", ndim = 2):
+            # block 0
+            with R.dataflow():
+                lv = R.call_tir(dense, (x, meta[relay.Constant][0]), (1, 128), dtype="float32")
+                lv1 = R.call_tir(add, (lv, meta[relay.Constant][1]), (1, 128), dtype="float32")
+                lv2 = R.call_tir(te_relu, (lv1,), (1, 128), dtype="float32")
+                lv3 = R.call_tir(dense1, (lv2, meta[relay.Constant][2]), (1, 10), dtype="float32")
+                lv4 = R.call_tir(add1, (lv3, meta[relay.Constant][3]), (1, 10), dtype="float32")
+                gv: Tensor((1, 10), "float32") = lv4
+                R.output(gv)
+            return lv4
+        
         @T.prim_func
-        def te_relu(rxplaceholder: T.Buffer[(1, 128), "float32"], relu: T.Buffer[(1, 128), "float32"]) -> None:
+        def add(rxplaceholder: T.Buffer[(1, 128), "float32"], rxplaceholder_1: T.Buffer[128, "float32"], T_add: T.Buffer[(1, 128), "float32"]) -> None:
             # function attr dict
-            T.func_attr({"global_symbol": "te_relu", "tir.noalias": True})
+            T.func_attr({"global_symbol": "add", "tir.noalias": True})
             # body
             # with T.block("root")
             for i0, i1 in T.grid(1, 128):
-                with T.block("relu"):
-                    i0_1, i1_1 = T.axis.remap("SS", [i0, i1])
-                    T.reads(rxplaceholder[i0_1, i1_1])
-                    T.writes(relu[i0_1, i1_1])
-                    relu[i0_1, i1_1] = T.max(rxplaceholder[i0_1, i1_1], T.float32(0))
+                with T.block("T_add"):
+                    ax0, ax1 = T.axis.remap("SS", [i0, i1])
+                    T.reads(rxplaceholder[ax0, ax1], rxplaceholder_1[ax1])
+                    T.writes(T_add[ax0, ax1])
+                    T_add[ax0, ax1] = rxplaceholder[ax0, ax1] + rxplaceholder_1[ax1]
         
         @T.prim_func
         def dense(rxplaceholder: T.Buffer[(1, 784), "float32"], rxplaceholder_1: T.Buffer[(128, 784), "float32"], T_matmul_NT: T.Buffer[(1, 128), "float32"]) -> None:
@@ -1082,17 +1095,17 @@ API 做到这一点。
                     T_matmul_NT[i, j] = T_matmul_NT[i, j] + rxplaceholder[i, k] * rxplaceholder_1[j, k]
         
         @T.prim_func
-        def add(rxplaceholder: T.Buffer[(1, 128), "float32"], rxplaceholder_1: T.Buffer[128, "float32"], T_add: T.Buffer[(1, 128), "float32"]) -> None:
+        def te_relu(rxplaceholder: T.Buffer[(1, 128), "float32"], relu: T.Buffer[(1, 128), "float32"]) -> None:
             # function attr dict
-            T.func_attr({"global_symbol": "add", "tir.noalias": True})
+            T.func_attr({"global_symbol": "te_relu", "tir.noalias": True})
             # body
             # with T.block("root")
             for i0, i1 in T.grid(1, 128):
-                with T.block("T_add"):
-                    ax0, ax1 = T.axis.remap("SS", [i0, i1])
-                    T.reads(rxplaceholder[ax0, ax1], rxplaceholder_1[ax1])
-                    T.writes(T_add[ax0, ax1])
-                    T_add[ax0, ax1] = rxplaceholder[ax0, ax1] + rxplaceholder_1[ax1]
+                with T.block("relu"):
+                    i0_1, i1_1 = T.axis.remap("SS", [i0, i1])
+                    T.reads(rxplaceholder[i0_1, i1_1])
+                    T.writes(relu[i0_1, i1_1])
+                    relu[i0_1, i1_1] = T.max(rxplaceholder[i0_1, i1_1], T.float32(0))
         
         @T.prim_func
         def dense1(rxplaceholder: T.Buffer[(1, 128), "float32"], rxplaceholder_1: T.Buffer[(10, 128), "float32"], T_matmul_NT: T.Buffer[(1, 10), "float32"]) -> None:
@@ -1108,19 +1121,6 @@ API 做到这一点。
                     with T.init():
                         T_matmul_NT[i, j] = T.float32(0)
                     T_matmul_NT[i, j] = T_matmul_NT[i, j] + rxplaceholder[i, k] * rxplaceholder_1[j, k]
-        
-        @R.function
-        def main(x: Tensor((1, 784), "float32")) -> Tensor(None, "float32", ndim = 2):
-            # block 0
-            with R.dataflow():
-                lv = R.call_tir(dense, (x, meta[relay.Constant][0]), (1, 128), dtype="float32")
-                lv1 = R.call_tir(add, (lv, meta[relay.Constant][1]), (1, 128), dtype="float32")
-                lv2 = R.call_tir(te_relu, (lv1,), (1, 128), dtype="float32")
-                lv3 = R.call_tir(dense1, (lv2, meta[relay.Constant][2]), (1, 10), dtype="float32")
-                lv4 = R.call_tir(add1, (lv3, meta[relay.Constant][3]), (1, 10), dtype="float32")
-                gv: Tensor((1, 10), "float32") = lv4
-                R.output(gv)
-            return lv4
         
         @T.prim_func
         def add1(rxplaceholder: T.Buffer[(1, 10), "float32"], rxplaceholder_1: T.Buffer[10, "float32"], T_add: T.Buffer[(1, 10), "float32"]) -> None:
@@ -1161,7 +1161,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    MLPModule Prediction: Trouser
+    MLPModule Prediction: T-shirt/top
 
 
 备注：翻译成高层算子
