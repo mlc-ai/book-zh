@@ -489,7 +489,7 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 <div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tvm</span><span class="o">.</span><span class="n">tir</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">PrimFunc</span>
 </pre></div>
 </div>
-<p>到目前为止，我们只看到包含单个张量函数的 IRModules。
+<p>到目前为止，我们只看到包含单个张量函数的 IRModule。
 机器学习编译过程中的一个 IRModule 可以包含多个张量函数。
 以下代码块显示了具有两个函数的 IRModule 示例。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tvm</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">ir_module</span>
@@ -1098,8 +1098,8 @@ Skylake）时，我们需要相应地调整
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time cost of transformed sch.mod </span><span class="si">%g</span><span class="s2"> sec&quot;</span> <span class="o">%</span> <span class="n">f_timer_after</span><span class="p">(</span><span class="n">a_nd</span><span class="p">,</span> <span class="n">b_nd</span><span class="p">,</span> <span class="n">c_nd</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">MyModule</span> <span class="mf">0.00503824</span> <span class="n">sec</span>
-<span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">sch</span><span class="o">.</span><span class="n">mod</span> <span class="mf">0.00136625</span> <span class="n">sec</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">MyModule</span> <span class="mf">0.00491708</span> <span class="n">sec</span>
+<span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">sch</span><span class="o">.</span><span class="n">mod</span> <span class="mf">0.00113809</span> <span class="n">sec</span>
 </pre></div>
 </div>
 <p>两个代码之间的运行时间差异很有意思。让我们快速分析一下影响性能的可能因素。
@@ -1355,7 +1355,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Code</span><span class="p">(</span><span class="n">mod_transformed</span><span class="o">.</span><span class="n">script</span><span class="p">(),</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">mod_transformed</span> <span class="mf">0.000585397</span> <span class="n">sec</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Time</span> <span class="n">cost</span> <span class="n">of</span> <span class="n">transformed</span> <span class="n">mod_transformed</span> <span class="mf">0.000573528</span> <span class="n">sec</span>
 </pre></div>
 </div>
 <style>pre { line-height: 125%; }

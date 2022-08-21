@@ -768,9 +768,9 @@ intrinsic（TensorIntrin），其中包含计算和实现的描述。
 .. parsed-literal::
     :class: output
 
-    [10:18:11] /workspace/tvm/src/target/target_info.cc:45: Warning: MemoryInfo for scope = global.accumulator is undefined
-    [10:18:11] /workspace/tvm/src/target/target_info.cc:45: Warning: MemoryInfo for scope = global.A_reg is undefined
-    [10:18:11] /workspace/tvm/src/target/target_info.cc:45: Warning: MemoryInfo for scope = global.B_reg is undefined
+    [15:25:15] /workspace/tvm/src/target/target_info.cc:45: Warning: MemoryInfo for scope = global.accumulator is undefined
+    [15:25:15] /workspace/tvm/src/target/target_info.cc:45: Warning: MemoryInfo for scope = global.A_reg is undefined
+    [15:25:15] /workspace/tvm/src/target/target_info.cc:45: Warning: MemoryInfo for scope = global.B_reg is undefined
 
 
 讨论
