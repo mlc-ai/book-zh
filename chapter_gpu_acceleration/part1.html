@@ -424,8 +424,11 @@ fetching</strong>，其中多个线程一起工作以将数据带到共享内存
                     T<span style="color: #AA22FF; font-weight: bold">.</span>writes(B[vi])
                     B[vi] <span style="color: #AA22FF; font-weight: bold">=</span> A_shared[vi] <span style="color: #AA22FF; font-weight: bold">+</span> A_shared[vi <span style="color: #AA22FF; font-weight: bold">+</span> <span style="color: #008000">1</span>] <span style="color: #AA22FF; font-weight: bold">+</span> A_shared[vi <span style="color: #AA22FF; font-weight: bold">+</span> <span style="color: #008000">2</span>]
 
-</pre></div><p>我们可以检查相应的底层代码（CUDA 中）。 生成的代码包含两部分： - 在主机
-(CPU) 上的调用 GPU 程序的部分； - 相应计算的 CUDA 内核。</p>
+</pre></div><p>我们可以检查相应的底层代码（CUDA 中）。 生成的代码包含两部分：</p>
+<ul class="simple">
+<li><p>在主机 (CPU) 上的调用 GPU 程序的部分；</p></li>
+<li><p>相应计算的 CUDA 内核。</p></li>
+</ul>
 <p>我们可以使用以下代码打印出 CUDA 内核。
 我们仍然需要主机和内核代码来运行程序，因此它只是一种快速检查最终代码生成结果的方法。</p>
 <p><strong>值得注意的是，构建过程会自动压缩共享内存阶段以使用线程块中使用的最小区域。</strong></p>
@@ -707,7 +710,7 @@ memory) 中。</p>
 </div>
 <div class="section" id="id9">
 <h2><span class="section-number">6.1.8. </span>小结<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h2>
-<p>本章研究 MLC 的另一个纬度，即我们如何变换我们的程序以实现硬件加速。MLC
+<p>本章研究 MLC 的另一个维度，即我们如何变换我们的程序以实现硬件加速。MLC
 过程帮助我们将输入模型连接到不同的 GPU 编程模型和环境。
 我们还将在接下来的章节中访问更多专业硬件加速主题。</p>
 <ul class="simple">

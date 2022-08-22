@@ -123,7 +123,7 @@
 .. parsed-literal::
     :class: output
 
-    Class: Trouser
+    Class: Bag
 
 
 下载模型参数
@@ -188,10 +188,10 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    [[ -2.1916986  20.542753  -15.925004   -2.2807474  -3.929889  -25.022781
-      -50.702988  -14.949704  -19.707922  -41.82191  ]]
-    [1]
-    NumPy-MLP Prediction: Trouser
+    [[-15.850434  -34.858982  -16.458443  -32.92011   -17.257437   -7.9587293
+       -5.1654854  -6.3643427  18.50072   -27.359882 ]]
+    [8]
+    NumPy-MLP Prediction: Bag
 
 
 上面的示例代码显示了利用高层NumPy数组操作，执行端到端模型执行的过程。
@@ -274,7 +274,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy MLP Prediction: Trouser
+    Low-level Numpy MLP Prediction: Bag
 
 
 在 TVMScript 中构建端到端 IRModule
@@ -508,7 +508,7 @@ free**\ 的。
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy with CallTIR Prediction: Trouser
+    Low-level Numpy with CallTIR Prediction: Bag
 
 
 实际上，最底层的实现会有显式的内存分配，所以\ ``call_tir``\ 主要是为了让我们在生成实际实现之前继续做一些高层的转换。
@@ -823,8 +823,8 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    [[ -2.1916997  20.542753  -15.925006   -2.2807512  -3.929886  -25.022774
-      -50.702995  -14.949713  -19.707918  -41.82192  ]]
+    [[-15.850431  -34.85898   -16.458437  -32.920113  -17.257435   -7.95873
+       -5.165484   -6.3643394  18.500721  -27.359888 ]]
 
 
 ``main``
@@ -848,7 +848,7 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    MyModule Prediction: Trouser
+    MyModule Prediction: Bag
 
 
 在环境中集成现有运行库
@@ -971,7 +971,7 @@ Build and Run
 .. parsed-literal::
     :class: output
 
-    MyModuleWithExternCall Prediction: Trouser
+    MyModuleWithExternCall Prediction: Bag
 
 
 Mixing TensorIR Code and Libraries
@@ -1049,7 +1049,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 .. parsed-literal::
     :class: output
 
-    MyModuleMixture Prediction: Trouser
+    MyModuleMixture Prediction: Bag
 
 
 将参数绑定到 IRModule
@@ -1187,7 +1187,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 
 
 在上面的脚本中，\ ``meta[relay.Constant][0]`` （译者注：目前 ``Relax``
-的常量表达依然继承自 ``Relay`` ，未来改API可能会更改）
+的常量表达依然继承自 ``Relay`` ，未来该 API 可能会更改）
 对应于一个存储常量的隐式字典（它没有显示为脚本的一部分，但仍然是
 IRModule 的一部分）。 如果我们构建转换后的
 IRModule，我们现在可以通过传入输入数据来调用该函数。
@@ -1214,7 +1214,7 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 .. parsed-literal::
     :class: output
 
-    MyModuleWithParams Prediction: Trouser
+    MyModuleWithParams Prediction: Bag
 
 
 讨论
