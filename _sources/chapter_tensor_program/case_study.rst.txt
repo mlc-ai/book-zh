@@ -1232,8 +1232,8 @@ Skylake）时，我们需要相应地调整
 .. parsed-literal::
     :class: output
 
-    Time cost of MyModule 0.00406854 sec
-    Time cost of transformed sch.mod 0.00133049 sec
+    Time cost of MyModule 0.0028911 sec
+    Time cost of transformed sch.mod 0.00155853 sec
 
 
 两个代码之间的运行时间差异很有意思。让我们快速分析一下影响性能的可能因素。
@@ -1538,7 +1538,7 @@ Skylake）时，我们需要相应地调整
 .. parsed-literal::
     :class: output
 
-    Time cost of transformed mod_transformed 0.000677589 sec
+    Time cost of transformed mod_transformed 0.000789963 sec
 
 
 
