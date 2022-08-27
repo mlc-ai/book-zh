@@ -538,7 +538,7 @@ Relax 函数中的每一行都是由 ``emit_te`` 调用生成的。 例如，
 
 在幕后，\ ``bb.emit_te`` 做了以下事情：
 
--  为 A 和 B 创建一个输入 ``te.placeholder``\ ，
+-  为 A 和 B 创建一个输入 ``te.placeholder``\ 。
 -  通过 ``te_matmul`` 函数运行它们。
 -  调用 ``te.create_prim_func`` 来创建一个 TensorIR 函数。
 -  通过 ``call_tir`` 生成对函数的调用。
@@ -673,8 +673,8 @@ IRModule。
     -------------  ------  ---------------------------------------------------------  -----------  --------
     placeholder    x       x                                                          ()           {}
     get_attr       weight  weight                                                     ()           {}
-    call_function  matmul  <built-in method matmul of type object at 0x7fd354d40980>  (x, weight)  {}
-    call_function  relu    <built-in method relu of type object at 0x7fd354d40980>    (matmul,)    {}
+    call_function  matmul  <built-in method matmul of type object at 0x7ff807f6c980>  (x, weight)  {}
+    call_function  relu    <built-in method relu of type object at 0x7ff807f6c980>    (matmul,)    {}
     output         output  output                                                     (relu,)      {}
 
 
@@ -908,7 +908,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    Class: Shirt
+    Class: Trouser
 
 
 .. raw:: latex
@@ -978,7 +978,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    Torch Prediction: Dress
+    Torch Prediction: Trouser
 
 
 让我们尝试通过为相应的 ``nn.Module`` 定义映射函数来从 FX 转换。
@@ -1043,6 +1043,45 @@ API 做到这一点。
                         T_matmul_NT[i, j] <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>float32(<span style="color: #008000">0</span>)
                     T_matmul_NT[i, j] <span style="color: #AA22FF; font-weight: bold">=</span> T_matmul_NT[i, j] <span style="color: #AA22FF; font-weight: bold">+</span> rxplaceholder[i, k] <span style="color: #AA22FF; font-weight: bold">*</span> rxplaceholder_1[j, k]
     
+        <span style="color: #AA22FF">@R</span><span style="color: #AA22FF; font-weight: bold">.</span>function
+        <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">main</span>(x: Tensor((<span style="color: #008000">1</span>, <span style="color: #008000">784</span>), <span style="color: #BA2121">&quot;float32&quot;</span>)) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> Tensor(<span style="color: #008000; font-weight: bold">None</span>, <span style="color: #BA2121">&quot;float32&quot;</span>, ndim <span style="color: #AA22FF; font-weight: bold">=</span> <span style="color: #008000">2</span>):
+            <span style="color: #007979; font-style: italic"># block 0</span>
+            <span style="color: #008000; font-weight: bold">with</span> R<span style="color: #AA22FF; font-weight: bold">.</span>dataflow():
+                lv <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(dense, (x, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">0</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
+                lv1 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(add, (lv, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">1</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
+                lv2 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(te_relu, (lv1,), (<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
+                lv3 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(dense1, (lv2, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">2</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
+                lv4 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(add1, (lv3, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">3</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
+                gv: Tensor((<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), <span style="color: #BA2121">&quot;float32&quot;</span>) <span style="color: #AA22FF; font-weight: bold">=</span> lv4
+                R<span style="color: #AA22FF; font-weight: bold">.</span>output(gv)
+            <span style="color: #008000; font-weight: bold">return</span> lv4
+    
+        <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
+        <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">add1</span>(rxplaceholder: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), <span style="color: #BA2121">&quot;float32&quot;</span>], rxplaceholder_1: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[<span style="color: #008000">10</span>, <span style="color: #BA2121">&quot;float32&quot;</span>], T_add: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), <span style="color: #BA2121">&quot;float32&quot;</span>]) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> <span style="color: #008000; font-weight: bold">None</span>:
+            <span style="color: #007979; font-style: italic"># function attr dict</span>
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;add1&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            <span style="color: #007979; font-style: italic"># body</span>
+            <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;)</span>
+            <span style="color: #008000; font-weight: bold">for</span> i0, i1 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>grid(<span style="color: #008000">1</span>, <span style="color: #008000">10</span>):
+                <span style="color: #008000; font-weight: bold">with</span> T<span style="color: #AA22FF; font-weight: bold">.</span>block(<span style="color: #BA2121">&quot;T_add&quot;</span>):
+                    ax0, ax1 <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>axis<span style="color: #AA22FF; font-weight: bold">.</span>remap(<span style="color: #BA2121">&quot;SS&quot;</span>, [i0, i1])
+                    T<span style="color: #AA22FF; font-weight: bold">.</span>reads(rxplaceholder[ax0, ax1], rxplaceholder_1[ax1])
+                    T<span style="color: #AA22FF; font-weight: bold">.</span>writes(T_add[ax0, ax1])
+                    T_add[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">=</span> rxplaceholder[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">+</span> rxplaceholder_1[ax1]
+    
+        <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
+        <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">add</span>(rxplaceholder: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), <span style="color: #BA2121">&quot;float32&quot;</span>], rxplaceholder_1: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[<span style="color: #008000">128</span>, <span style="color: #BA2121">&quot;float32&quot;</span>], T_add: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), <span style="color: #BA2121">&quot;float32&quot;</span>]) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> <span style="color: #008000; font-weight: bold">None</span>:
+            <span style="color: #007979; font-style: italic"># function attr dict</span>
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;add&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            <span style="color: #007979; font-style: italic"># body</span>
+            <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;)</span>
+            <span style="color: #008000; font-weight: bold">for</span> i0, i1 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>grid(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>):
+                <span style="color: #008000; font-weight: bold">with</span> T<span style="color: #AA22FF; font-weight: bold">.</span>block(<span style="color: #BA2121">&quot;T_add&quot;</span>):
+                    ax0, ax1 <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>axis<span style="color: #AA22FF; font-weight: bold">.</span>remap(<span style="color: #BA2121">&quot;SS&quot;</span>, [i0, i1])
+                    T<span style="color: #AA22FF; font-weight: bold">.</span>reads(rxplaceholder[ax0, ax1], rxplaceholder_1[ax1])
+                    T<span style="color: #AA22FF; font-weight: bold">.</span>writes(T_add[ax0, ax1])
+                    T_add[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">=</span> rxplaceholder[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">+</span> rxplaceholder_1[ax1]
+    
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">dense</span>(rxplaceholder: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">784</span>), <span style="color: #BA2121">&quot;float32&quot;</span>], rxplaceholder_1: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">128</span>, <span style="color: #008000">784</span>), <span style="color: #BA2121">&quot;float32&quot;</span>], T_matmul_NT: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), <span style="color: #BA2121">&quot;float32&quot;</span>]) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> <span style="color: #008000; font-weight: bold">None</span>:
             <span style="color: #007979; font-style: italic"># function attr dict</span>
@@ -1059,19 +1098,6 @@ API 做到这一点。
                     T_matmul_NT[i, j] <span style="color: #AA22FF; font-weight: bold">=</span> T_matmul_NT[i, j] <span style="color: #AA22FF; font-weight: bold">+</span> rxplaceholder[i, k] <span style="color: #AA22FF; font-weight: bold">*</span> rxplaceholder_1[j, k]
     
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
-        <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">add</span>(rxplaceholder: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), <span style="color: #BA2121">&quot;float32&quot;</span>], rxplaceholder_1: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[<span style="color: #008000">128</span>, <span style="color: #BA2121">&quot;float32&quot;</span>], T_add: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), <span style="color: #BA2121">&quot;float32&quot;</span>]) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> <span style="color: #008000; font-weight: bold">None</span>:
-            <span style="color: #007979; font-style: italic"># function attr dict</span>
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;add&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
-            <span style="color: #007979; font-style: italic"># body</span>
-            <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;)</span>
-            <span style="color: #008000; font-weight: bold">for</span> i0, i1 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>grid(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>):
-                <span style="color: #008000; font-weight: bold">with</span> T<span style="color: #AA22FF; font-weight: bold">.</span>block(<span style="color: #BA2121">&quot;T_add&quot;</span>):
-                    ax0, ax1 <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>axis<span style="color: #AA22FF; font-weight: bold">.</span>remap(<span style="color: #BA2121">&quot;SS&quot;</span>, [i0, i1])
-                    T<span style="color: #AA22FF; font-weight: bold">.</span>reads(rxplaceholder[ax0, ax1], rxplaceholder_1[ax1])
-                    T<span style="color: #AA22FF; font-weight: bold">.</span>writes(T_add[ax0, ax1])
-                    T_add[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">=</span> rxplaceholder[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">+</span> rxplaceholder_1[ax1]
-    
-        <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">te_relu</span>(rxplaceholder: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), <span style="color: #BA2121">&quot;float32&quot;</span>], relu: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), <span style="color: #BA2121">&quot;float32&quot;</span>]) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> <span style="color: #008000; font-weight: bold">None</span>:
             <span style="color: #007979; font-style: italic"># function attr dict</span>
             T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;te_relu&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
@@ -1083,32 +1109,6 @@ API 做到这一点。
                     T<span style="color: #AA22FF; font-weight: bold">.</span>reads(rxplaceholder[i0_1, i1_1])
                     T<span style="color: #AA22FF; font-weight: bold">.</span>writes(relu[i0_1, i1_1])
                     relu[i0_1, i1_1] <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>max(rxplaceholder[i0_1, i1_1], T<span style="color: #AA22FF; font-weight: bold">.</span>float32(<span style="color: #008000">0</span>))
-    
-        <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
-        <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">add1</span>(rxplaceholder: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), <span style="color: #BA2121">&quot;float32&quot;</span>], rxplaceholder_1: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[<span style="color: #008000">10</span>, <span style="color: #BA2121">&quot;float32&quot;</span>], T_add: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer[(<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), <span style="color: #BA2121">&quot;float32&quot;</span>]) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> <span style="color: #008000; font-weight: bold">None</span>:
-            <span style="color: #007979; font-style: italic"># function attr dict</span>
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;add1&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
-            <span style="color: #007979; font-style: italic"># body</span>
-            <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;)</span>
-            <span style="color: #008000; font-weight: bold">for</span> i0, i1 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>grid(<span style="color: #008000">1</span>, <span style="color: #008000">10</span>):
-                <span style="color: #008000; font-weight: bold">with</span> T<span style="color: #AA22FF; font-weight: bold">.</span>block(<span style="color: #BA2121">&quot;T_add&quot;</span>):
-                    ax0, ax1 <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>axis<span style="color: #AA22FF; font-weight: bold">.</span>remap(<span style="color: #BA2121">&quot;SS&quot;</span>, [i0, i1])
-                    T<span style="color: #AA22FF; font-weight: bold">.</span>reads(rxplaceholder[ax0, ax1], rxplaceholder_1[ax1])
-                    T<span style="color: #AA22FF; font-weight: bold">.</span>writes(T_add[ax0, ax1])
-                    T_add[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">=</span> rxplaceholder[ax0, ax1] <span style="color: #AA22FF; font-weight: bold">+</span> rxplaceholder_1[ax1]
-    
-        <span style="color: #AA22FF">@R</span><span style="color: #AA22FF; font-weight: bold">.</span>function
-        <span style="color: #008000; font-weight: bold">def</span> <span style="color: #1E90FF">main</span>(x: Tensor((<span style="color: #008000">1</span>, <span style="color: #008000">784</span>), <span style="color: #BA2121">&quot;float32&quot;</span>)) <span style="color: #AA22FF; font-weight: bold">-&gt;</span> Tensor(<span style="color: #008000; font-weight: bold">None</span>, <span style="color: #BA2121">&quot;float32&quot;</span>, ndim <span style="color: #AA22FF; font-weight: bold">=</span> <span style="color: #008000">2</span>):
-            <span style="color: #007979; font-style: italic"># block 0</span>
-            <span style="color: #008000; font-weight: bold">with</span> R<span style="color: #AA22FF; font-weight: bold">.</span>dataflow():
-                lv <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(dense, (x, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">0</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
-                lv1 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(add, (lv, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">1</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
-                lv2 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(te_relu, (lv1,), (<span style="color: #008000">1</span>, <span style="color: #008000">128</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
-                lv3 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(dense1, (lv2, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">2</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
-                lv4 <span style="color: #AA22FF; font-weight: bold">=</span> R<span style="color: #AA22FF; font-weight: bold">.</span>call_tir(add1, (lv3, meta[relay<span style="color: #AA22FF; font-weight: bold">.</span>Constant][<span style="color: #008000">3</span>]), (<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), dtype<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;float32&quot;</span>)
-                gv: Tensor((<span style="color: #008000">1</span>, <span style="color: #008000">10</span>), <span style="color: #BA2121">&quot;float32&quot;</span>) <span style="color: #AA22FF; font-weight: bold">=</span> lv4
-                R<span style="color: #AA22FF; font-weight: bold">.</span>output(gv)
-            <span style="color: #008000; font-weight: bold">return</span> lv4
     
     </pre></div>
 
@@ -1137,7 +1137,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    MLPModule Prediction: Dress
+    MLPModule Prediction: Trouser
 
 
 备注：翻译成高层算子
@@ -1199,7 +1199,7 @@ API 做到这一点。
 
 
 
-上面展示了我们使用那些内置的算子将模型导入为 IRModule
+上面展示了我们使用哪些内置的算子将模型导入为 IRModule
 后的结果。这些内置算子是 **比 TensorIR
 函数更高级别的抽象**\ 。我们可以有不同的机会将这些原始算子进一步转换为库函数或
 TensorIR 函数。
