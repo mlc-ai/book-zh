@@ -91,19 +91,6 @@ multi-processors, SM)，每个流处理器都有许多核心。 GPU
     sch.mod.show()
 
 
-.. raw:: latex
-
-   \diilbookstyleoutputcell
-
-.. parsed-literal::
-    :class: output
-
-    /usr/share/miniconda/envs/mlc/lib/python3.8/site-packages/tvm/script/highlight.py:117: UserWarning: No module named 'black'
-    To print formatted TVM script, please install the formatter 'Black':
-    /usr/share/miniconda/envs/mlc/bin/python -m pip install "black==22.3.0" --upgrade --user
-      warnings.warn(
-
-
 
 .. raw:: html
 
@@ -114,7 +101,7 @@ multi-processors, SM)，每个流处理器都有许多核心。 GPU
     <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Module</span>:
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">main</span>(A: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>), B: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>), C: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>)):
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;main&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;tir.noalias&quot;</span>: T<span style="color: #AA22FF; font-weight: bold">.</span>bool(<span style="color: #008000; font-weight: bold">True</span>)})
             <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;):</span>
             <span style="color: #008000; font-weight: bold">for</span> i_0, i_1 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>grid(<span style="color: #008000">8</span>, <span style="color: #008000">128</span>):
                 <span style="color: #008000; font-weight: bold">with</span> T<span style="color: #AA22FF; font-weight: bold">.</span>block(<span style="color: #BA2121">&quot;C&quot;</span>):
@@ -146,19 +133,6 @@ GPU 线程块
     sch.mod.show()
 
 
-.. raw:: latex
-
-   \diilbookstyleoutputcell
-
-.. parsed-literal::
-    :class: output
-
-    /usr/share/miniconda/envs/mlc/lib/python3.8/site-packages/tvm/script/highlight.py:117: UserWarning: No module named 'black'
-    To print formatted TVM script, please install the formatter 'Black':
-    /usr/share/miniconda/envs/mlc/bin/python -m pip install "black==22.3.0" --upgrade --user
-      warnings.warn(
-
-
 
 .. raw:: html
 
@@ -169,7 +143,7 @@ GPU 线程块
     <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Module</span>:
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">main</span>(A: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>), B: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>), C: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>)):
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;main&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;tir.noalias&quot;</span>: T<span style="color: #AA22FF; font-weight: bold">.</span>bool(<span style="color: #008000; font-weight: bold">True</span>)})
             <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;):</span>
             <span style="color: #008000; font-weight: bold">for</span> i_0 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>thread_binding(<span style="color: #008000">8</span>, thread<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;blockIdx.x&quot;</span>):
                 <span style="color: #008000; font-weight: bold">for</span> i_1 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>thread_binding(<span style="color: #008000">128</span>, thread<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;threadIdx.x&quot;</span>):
@@ -250,19 +224,6 @@ GPU 线程块
     sch.mod.show()
 
 
-.. raw:: latex
-
-   \diilbookstyleoutputcell
-
-.. parsed-literal::
-    :class: output
-
-    /usr/share/miniconda/envs/mlc/lib/python3.8/site-packages/tvm/script/highlight.py:117: UserWarning: No module named 'black'
-    To print formatted TVM script, please install the formatter 'Black':
-    /usr/share/miniconda/envs/mlc/bin/python -m pip install "black==22.3.0" --upgrade --user
-      warnings.warn(
-
-
 
 .. raw:: html
 
@@ -273,7 +234,7 @@ GPU 线程块
     <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Module</span>:
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">main</span>(A: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1027</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>), B: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>)):
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;main&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;tir.noalias&quot;</span>: T<span style="color: #AA22FF; font-weight: bold">.</span>bool(<span style="color: #008000; font-weight: bold">True</span>)})
             <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;):</span>
             <span style="color: #008000; font-weight: bold">for</span> i_0 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>thread_binding(<span style="color: #008000">8</span>, thread<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;blockIdx.x&quot;</span>):
                 <span style="color: #008000; font-weight: bold">for</span> i_1 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>thread_binding(<span style="color: #008000">128</span>, thread<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;threadIdx.x&quot;</span>):
@@ -305,19 +266,6 @@ memory)。
     sch.mod.show()
 
 
-.. raw:: latex
-
-   \diilbookstyleoutputcell
-
-.. parsed-literal::
-    :class: output
-
-    /usr/share/miniconda/envs/mlc/lib/python3.8/site-packages/tvm/script/highlight.py:117: UserWarning: No module named 'black'
-    To print formatted TVM script, please install the formatter 'Black':
-    /usr/share/miniconda/envs/mlc/bin/python -m pip install "black==22.3.0" --upgrade --user
-      warnings.warn(
-
-
 
 .. raw:: html
 
@@ -328,7 +276,7 @@ memory)。
     <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Module</span>:
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">main</span>(A: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1027</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>), B: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>)):
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;main&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;tir.noalias&quot;</span>: T<span style="color: #AA22FF; font-weight: bold">.</span>bool(<span style="color: #008000; font-weight: bold">True</span>)})
             <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;):</span>
             A_shared <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>alloc_buffer((<span style="color: #008000">1027</span>,), scope<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;shared&quot;</span>)
             <span style="color: #008000; font-weight: bold">for</span> i_0 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>thread_binding(<span style="color: #008000">8</span>, thread<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;blockIdx.x&quot;</span>):
@@ -364,19 +312,6 @@ fetching**\ ，其中多个线程一起工作以将数据带到共享内存中�
     sch.mod.show()
 
 
-.. raw:: latex
-
-   \diilbookstyleoutputcell
-
-.. parsed-literal::
-    :class: output
-
-    /usr/share/miniconda/envs/mlc/lib/python3.8/site-packages/tvm/script/highlight.py:117: UserWarning: No module named 'black'
-    To print formatted TVM script, please install the formatter 'Black':
-    /usr/share/miniconda/envs/mlc/bin/python -m pip install "black==22.3.0" --upgrade --user
-      warnings.warn(
-
-
 
 .. raw:: html
 
@@ -387,7 +322,7 @@ fetching**\ ，其中多个线程一起工作以将数据带到共享内存中�
     <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Module</span>:
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">main</span>(A: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1027</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>), B: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>,), <span style="color: #BA2121">&quot;float32&quot;</span>)):
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;main&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;tir.noalias&quot;</span>: T<span style="color: #AA22FF; font-weight: bold">.</span>bool(<span style="color: #008000; font-weight: bold">True</span>)})
             <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;):</span>
             A_shared <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>alloc_buffer((<span style="color: #008000">1027</span>,), scope<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;shared&quot;</span>)
             <span style="color: #008000; font-weight: bold">for</span> i_0 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>thread_binding(<span style="color: #008000">8</span>, thread<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;blockIdx.x&quot;</span>):
@@ -519,19 +454,6 @@ MLC 过程通常支持针对多种硬件平台，我们可以通过改变目标�
     sch.mod.show()
 
 
-.. raw:: latex
-
-   \diilbookstyleoutputcell
-
-.. parsed-literal::
-    :class: output
-
-    /usr/share/miniconda/envs/mlc/lib/python3.8/site-packages/tvm/script/highlight.py:117: UserWarning: No module named 'black'
-    To print formatted TVM script, please install the formatter 'Black':
-    /usr/share/miniconda/envs/mlc/bin/python -m pip install "black==22.3.0" --upgrade --user
-      warnings.warn(
-
-
 
 .. raw:: html
 
@@ -542,7 +464,7 @@ MLC 过程通常支持针对多种硬件平台，我们可以通过改变目标�
     <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Module</span>:
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">main</span>(A: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), <span style="color: #BA2121">&quot;float32&quot;</span>), B: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), <span style="color: #BA2121">&quot;float32&quot;</span>), C: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), <span style="color: #BA2121">&quot;float32&quot;</span>)):
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;main&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;tir.noalias&quot;</span>: T<span style="color: #AA22FF; font-weight: bold">.</span>bool(<span style="color: #008000; font-weight: bold">True</span>)})
             <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;):</span>
             C_local <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>alloc_buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), scope<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;local&quot;</span>)
             <span style="color: #008000; font-weight: bold">for</span> i_0 <span style="color: #008000; font-weight: bold">in</span> T<span style="color: #AA22FF; font-weight: bold">.</span>thread_binding(<span style="color: #008000">16</span>, thread<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;blockIdx.y&quot;</span>):
@@ -660,19 +582,6 @@ memory) 中。
     sch.mod.show()
 
 
-.. raw:: latex
-
-   \diilbookstyleoutputcell
-
-.. parsed-literal::
-    :class: output
-
-    /usr/share/miniconda/envs/mlc/lib/python3.8/site-packages/tvm/script/highlight.py:117: UserWarning: No module named 'black'
-    To print formatted TVM script, please install the formatter 'Black':
-    /usr/share/miniconda/envs/mlc/bin/python -m pip install "black==22.3.0" --upgrade --user
-      warnings.warn(
-
-
 
 .. raw:: html
 
@@ -683,7 +592,7 @@ memory) 中。
     <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Module</span>:
         <span style="color: #AA22FF">@T</span><span style="color: #AA22FF; font-weight: bold">.</span>prim_func
         <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">main</span>(A: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), <span style="color: #BA2121">&quot;float32&quot;</span>), B: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), <span style="color: #BA2121">&quot;float32&quot;</span>), C: T<span style="color: #AA22FF; font-weight: bold">.</span>Buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), <span style="color: #BA2121">&quot;float32&quot;</span>)):
-            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;global_symbol&quot;</span>: <span style="color: #BA2121">&quot;main&quot;</span>, <span style="color: #BA2121">&quot;tir.noalias&quot;</span>: <span style="color: #008000; font-weight: bold">True</span>})
+            T<span style="color: #AA22FF; font-weight: bold">.</span>func_attr({<span style="color: #BA2121">&quot;tir.noalias&quot;</span>: T<span style="color: #AA22FF; font-weight: bold">.</span>bool(<span style="color: #008000; font-weight: bold">True</span>)})
             <span style="color: #007979; font-style: italic"># with T.block(&quot;root&quot;):</span>
             C_local <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>alloc_buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), scope<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;local&quot;</span>)
             A_shared <span style="color: #AA22FF; font-weight: bold">=</span> T<span style="color: #AA22FF; font-weight: bold">.</span>alloc_buffer((<span style="color: #008000">1024</span>, <span style="color: #008000">1024</span>), scope<span style="color: #AA22FF; font-weight: bold">=</span><span style="color: #BA2121">&quot;shared&quot;</span>)
@@ -768,7 +677,6 @@ memory) 中。
        max_trials_global=64,
        num_trials_per_iter=64,
        work_dir="./tune_tmp",
-       task_name="main"
    )
    sch = ms.tir_integration.compile_tir(database, MyModuleMatmul, "nvidia/tesla-p100")
    sch.mod.show()

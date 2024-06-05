@@ -86,8 +86,8 @@
     Extracting data/FashionMNIST/raw/t10k-images-idx3-ubyte.gz to data/FashionMNIST/raw
     
     Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz
-    100.0%Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz to data/FashionMNIST/raw/t10k-labels-idx1-ubyte.gz
-    Extracting data/FashionMNIST/raw/t10k-labels-idx1-ubyte.gz to data/FashionMNIST/raw
+    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz to data/FashionMNIST/raw/t10k-labels-idx1-ubyte.gz
+    100.0%Extracting data/FashionMNIST/raw/t10k-labels-idx1-ubyte.gz to data/FashionMNIST/raw
     
     
 
@@ -121,7 +121,7 @@
 .. parsed-literal::
     :class: output
 
-    Class: Sandal
+    Class: Bag
 
 
 下载模型参数
@@ -186,10 +186,10 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    [[-23.49592   -24.32377   -17.936213  -15.301368  -18.97627    22.026953
-      -25.760815  -19.639427   -3.5585783 -10.392135 ]]
-    [5]
-    NumPy-MLP Prediction: Sandal
+    [[-13.617741  -23.764347   -8.766845  -14.175274  -12.962378   -9.517136
+       -4.7158275   2.538267   10.880611   -9.265209 ]]
+    [8]
+    NumPy-MLP Prediction: Bag
 
 
 上面的示例代码显示了利用高层NumPy数组操作，执行端到端模型执行的过程。
@@ -272,7 +272,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy MLP Prediction: Sandal
+    Low-level Numpy MLP Prediction: Bag
 
 
 在 TVMScript 中构建端到端 IRModule
@@ -494,7 +494,7 @@ free**\ 的。
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy with CallTIR Prediction: Sandal
+    Low-level Numpy with CallTIR Prediction: Bag
 
 
 实际上，最底层的实现会有显式的内存分配，所以\ ``call_dps_packed``\ 主要是为了让我们在生成实际实现之前继续做一些高层的转换。
@@ -603,6 +603,7 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
     .output_html .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
     .output_html .gd { color: #A00000 } /* Generic.Deleted */
     .output_html .ge { font-style: italic } /* Generic.Emph */
+    .output_html .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
     .output_html .gr { color: #E40000 } /* Generic.Error */
     .output_html .gh { color: #000080; font-weight: bold } /* Generic.Heading */
     .output_html .gi { color: #008400 } /* Generic.Inserted */
@@ -794,8 +795,8 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    [[-23.495918 -24.323767 -17.936213 -15.301364 -18.976273  22.02696
-      -25.76081  -19.639431  -3.558576 -10.392134]]
+    [[-13.617741  -23.764349   -8.766844  -14.175275  -12.962375   -9.517134
+       -4.715829    2.5382652  10.880614   -9.26521  ]]
 
 
 ``main``
@@ -819,7 +820,7 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    MyModule Prediction: Sandal
+    MyModule Prediction: Bag
 
 
 在环境中集成现有运行库
@@ -943,7 +944,7 @@ Build and Run
 .. parsed-literal::
     :class: output
 
-    MyModuleWithExternCall Prediction: Sandal
+    MyModuleWithExternCall Prediction: Bag
 
 
 Mixing TensorIR Code and Libraries
@@ -1025,7 +1026,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 .. parsed-literal::
     :class: output
 
-    MyModuleMixture Prediction: Sandal
+    MyModuleMixture Prediction: Bag
 
 
 将参数绑定到 IRModule
@@ -1069,6 +1070,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
     .output_html .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
     .output_html .gd { color: #A00000 } /* Generic.Deleted */
     .output_html .ge { font-style: italic } /* Generic.Emph */
+    .output_html .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
     .output_html .gr { color: #E40000 } /* Generic.Error */
     .output_html .gh { color: #000080; font-weight: bold } /* Generic.Heading */
     .output_html .gi { color: #008400 } /* Generic.Inserted */
@@ -1197,7 +1199,7 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 .. parsed-literal::
     :class: output
 
-    MyModuleWithParams Prediction: Sandal
+    MyModuleWithParams Prediction: Bag
 
 
 讨论
