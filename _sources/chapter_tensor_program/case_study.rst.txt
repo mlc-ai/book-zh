@@ -15,17 +15,17 @@ MLC 课程安装一个包装好的版本。
 
 .. code:: bash
 
-   python3 -m  pip install mlc-ai-nightly -f https://mlc.ai/wheels
+   python -m pip install --pre -U -f https://mlc.ai/wheels mlc-ai-nightly-cpu
 
 序言
 ~~~~
 
-.. figure:: ../img/tensor_func_linear_relu.png
+|image1|
 
 在开始今天这一节之前，让我们回忆机器学习编译过程的关键原则。大多数的机器学习编译可以被视为张量函数之间的变换。在接下来的内容中我们主要想回答的以下几个问题：
 
--  什么是表示张量函数可能的抽象？
--  什么是张量函数之间可能的变换？
+- 什么是表示张量函数可能的抽象？
+- 什么是张量函数之间可能的变换？
 
 在这里我们将聚焦于元张量函数，部分讨论这些问题。
 
@@ -36,6 +36,8 @@ MLC 课程安装一个包装好的版本。
 
 现在我们已经准备好学习一个特定的张量程序抽象的实例：TensorIR。 TensorIR
 是标准机器学习编译框架 Apache TVM 中使用的张量程序抽象。
+
+.. |image1| image:: ../img/tensor_func_linear_relu.png
 
 .. raw:: latex
 
@@ -55,8 +57,8 @@ MLC 课程安装一个包装好的版本。
 具体地，对于两个大小为 :math:`128 \times 128` 的矩阵 A 和
 B，我们进行如下两步的张量计算。
 
--  :math:`Y_{i, j} = \sum_k A_{i, k} \times B_{k, j}`
--  :math:`C_{i, j} = \mathbb{relu}(Y_{i, j}) = \mathbb{max}(Y_{i, j}, 0)`
+- :math:`Y_{i, j} = \sum_k A_{i, k} \times B_{k, j}`
+- :math:`C_{i, j} = \mathbb{relu}(Y_{i, j}) = \mathbb{max}(Y_{i, j}, 0)`
 
 上面的计算很像在我们神经网络中经常看到的典型的元张量函数：一个线性层与一个
 ReLU 激活层。首先，我们使用如下 NumPy 中的数组计算实现这两个操作。
@@ -81,8 +83,8 @@ ReLU 激活层。首先，我们使用如下 NumPy 中的数组计算实现这�
 为了说明底层细节，我们将在 NumPy API 的一个受限子集中编写示例 ——
 我们称之为 **低级 NumPy**\ 。它使用以下的约定：
 
--  我们将在必要时使用循环而不是数组函数来展示可能的循环计算。
--  如果可能，我们总是通过 ``numpy.empty`` 显式地分配数组并传递它们。
+- 我们将在必要时使用循环而不是数组函数来展示可能的循环计算。
+- 如果可能，我们总是通过 ``numpy.empty`` 显式地分配数组并传递它们。
 
 需要注意的是，这不是人们通常编写 NumPy
 程序的方式。不过，它们仍然与幕后发生的事情非常相似 ——
@@ -130,9 +132,9 @@ ReLU 激活层。首先，我们使用如下 NumPy 中的数组计算实现这�
 Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 代码包含我们将在这些计算的实际实现中使用的所有可能元素。
 
--  多维缓冲区（数组）。
--  在数组维度上的循环。
--  在循环下执行的计算语句。
+- 多维缓冲区（数组）。
+- 在数组维度上的循环。
+- 在循环下执行的计算语句。
 
 在看过低级 NumPy 示例后，现在我们准备介绍 TensorIR。下面的代码块展示了
 ``mm_relu`` 的 TensorIR 实现。这里的代码是用一种名为 TVMScript
@@ -169,7 +171,7 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 能够同时查看 NumPy 代码和 TensorIR
 代码并检查相应的元素是很有帮助的。我们将详细介绍它们。
 
-.. figure:: ../img/tensor_func_and_numpy.png
+|image1|
 
 我们首先回顾一下在 NumPy 和 TensorIR
 之间具有直接对应关系的元素。接下来我们将回过来查看不属于 NumPy
@@ -179,6 +181,8 @@ Python 解释器，代码本身会运行得很慢。尽管如此，示例 NumPy
 ^^^^^^^^^^^^^^^^
 
 首先，让我们看一下函数参数。函数参数对应于 NumPy 函数上的同一组参数。
+
+.. |image1| image:: ../img/tensor_func_and_numpy.png
 
 .. raw:: latex
 
@@ -278,11 +282,11 @@ For 循环迭代
 
 这三行包含以下信息：
 
--  定义了 ``vi``\ 、\ ``vj``\ 、\ ``vk`` 应被绑定到的位置（在本例中为
-   ``i``\ 、\ ``j`` 和 ``k``\ ）；
--  声明了 ``vi``\ 、\ ``vj``\ 、\ ``vk``
-   的原始范围（\ ``T.axis.spatial(128, i)`` 中的 ``128``\ ）；
--  声明了块轴的属性（\ ``spatial``, ``reduce``\ ）。
+- 定义了 ``vi``\ 、\ ``vj``\ 、\ ``vk`` 应被绑定到的位置（在本例中为
+  ``i``\ 、\ ``j`` 和 ``k``\ ）；
+- 声明了 ``vi``\ 、\ ``vj``\ 、\ ``vk``
+  的原始范围（\ ``T.axis.spatial(128, i)`` 中的 ``128``\ ）；
+- 声明了块轴的属性（\ ``spatial``, ``reduce``\ ）。
 
 我们一一浏览这些属性。首先，就边界关系而言，\ ``vi = T.axis.spatial(128, i)``
 有效地蕴含了 ``vi = i``\ 。\ ``[axis_range]`` 值提供了 ``[block_axis]``
@@ -298,7 +302,7 @@ For 循环迭代
 进行（规约）更新，我们暂时将其标记为\ *写入*\ ，因为我们不需要来自另一个块的缓冲区
 ``Y`` 的值。
 
-.. figure:: ../img/tensor_ir_block_axis.png
+|image1|
 
 在我们的示例中，块 ``Y`` 通过读取来自 ``A[vi, vk]`` 和 ``B[vk, vj]``
 的值来计算结果 ``Y[vi, vj]``\ ，并对所有可能的 ``vk`` 执行求和。
@@ -322,6 +326,8 @@ For 循环迭代
 
 块轴信息还提供了额外的属性，帮助我们验证用于执行计算的外部循环的正确性。例如，下面的代码块会导致错误，因为循环需要一个大小为
 128 的迭代器，但我们只将它绑定到一个大小为 127 的 for 循环。
+
+.. |image1| image:: ../img/tensor_ir_block_axis.png
 
 .. raw:: latex
 
@@ -501,9 +507,9 @@ For 循环迭代
 到目前为止，我们一同看过了一个 TensorIR
 程序示例，并涵盖了大部分元素，包括：
 
--  参数和中间临时内存中的缓冲区声明；
--  For 循环迭代；
--  **块**\ 和块轴属性。
+- 参数和中间临时内存中的缓冲区声明；
+- For 循环迭代；
+- **块**\ 和块轴属性。
 
 在本节中，我们介绍了一个 TensorIR
 示例，它涵盖了机器学习编译中最常见的元素。
@@ -550,8 +556,8 @@ TensorIR
 上面的代码块显示了 ``mm_relu``
 的一个稍微不同的变体。它与原始程序的不同是
 
--  我们用两个循环 ``j0`` 和 ``j1`` 替换了 ``j`` 循环；
--  迭代顺序略有变化。
+- 我们用两个循环 ``j0`` 和 ``j1`` 替换了 ``j`` 循环；
+- 迭代顺序略有变化。
 
 为了获得
 ``lnumpy_mm_relu_v2``\ ，我们必须重写一个新函数（或手动复制粘贴和编辑）。TensorIR
@@ -582,9 +588,9 @@ TensorIR
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -601,34 +607,34 @@ TensorIR
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -643,19 +649,19 @@ TensorIR
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
@@ -664,14 +670,14 @@ TensorIR
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
                     <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
@@ -736,9 +742,9 @@ TensorIR
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -755,34 +761,34 @@ TensorIR
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -797,19 +803,19 @@ TensorIR
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j_0</span><span class="p">,</span> <span class="n">j_1</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
@@ -820,14 +826,14 @@ TensorIR
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
                     <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
@@ -858,9 +864,9 @@ TensorIR
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -877,34 +883,34 @@ TensorIR
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -919,19 +925,19 @@ TensorIR
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j_0</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">j_1</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
@@ -942,14 +948,14 @@ TensorIR
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
                     <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
@@ -986,9 +992,9 @@ TensorIR
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -1005,34 +1011,34 @@ TensorIR
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -1047,19 +1053,19 @@ TensorIR
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j_0</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">32</span><span class="p">):</span>
@@ -1071,7 +1077,7 @@ TensorIR
                         <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                            <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                         <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">ax0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
@@ -1079,7 +1085,7 @@ TensorIR
                         <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">j_0</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">ax0</span><span class="p">)</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                        <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                        <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
@@ -1159,7 +1165,7 @@ Skylake）时，我们需要相应地调整
 
 .. code:: python
 
-    rt_lib = tvm.build(MyModule, target="llvm")
+    rt_lib = tvm.compile(MyModule, target="llvm")
 
 然后，我们将创建三个用于保存输入和输出的 TVM NDArray。
 
@@ -1169,9 +1175,9 @@ Skylake）时，我们需要相应地调整
 
 .. code:: python
 
-    a_nd = tvm.nd.array(a_np)
-    b_nd = tvm.nd.array(b_np)
-    c_nd = tvm.nd.empty((128, 128), dtype="float32")
+    a_nd = tvm.runtime.tensor(a_np)
+    b_nd = tvm.runtime.tensor(b_np)
+    c_nd = tvm.runtime.tensor(np.empty((128, 128), dtype="float32"))
     type(c_nd)
 
 
@@ -1184,7 +1190,7 @@ Skylake）时，我们需要相应地调整
 .. parsed-literal::
     :class: output
 
-    tvm.runtime.ndarray.NDArray
+    tvm.runtime._tensor.Tensor
 
 
 
@@ -1210,7 +1216,7 @@ Skylake）时，我们需要相应地调整
 
 .. code:: python
 
-    rt_lib_after = tvm.build(sch.mod, target="llvm")
+    rt_lib_after = tvm.compile(sch.mod, target="llvm")
     rt_lib_after["mm_relu"](a_nd, b_nd, c_nd)
     np.testing.assert_allclose(c_mm_relu, c_nd.numpy(), rtol=1e-5)
 
@@ -1223,9 +1229,9 @@ Skylake）时，我们需要相应地调整
 
 .. code:: python
 
-    f_timer_before = rt_lib.time_evaluator("mm_relu", tvm.cpu())
+    f_timer_before = rt_lib.mod.time_evaluator("mm_relu", tvm.cpu())
     print("Time cost of MyModule %g sec" % f_timer_before(a_nd, b_nd, c_nd).mean)
-    f_timer_after = rt_lib_after.time_evaluator("mm_relu", tvm.cpu())
+    f_timer_after = rt_lib_after.mod.time_evaluator("mm_relu", tvm.cpu())
     print("Time cost of transformed sch.mod %g sec" % f_timer_after(a_nd, b_nd, c_nd).mean)
 
 
@@ -1236,8 +1242,8 @@ Skylake）时，我们需要相应地调整
 .. parsed-literal::
     :class: output
 
-    Time cost of MyModule 0.00303439 sec
-    Time cost of transformed sch.mod 0.000721864 sec
+    Time cost of MyModule 0.00250505 sec
+    Time cost of transformed sch.mod 0.000678884 sec
 
 
 两个代码之间的运行时间差异很有意思。让我们快速分析一下影响性能的可能因素。
@@ -1266,9 +1272,9 @@ Skylake）时，我们需要相应地调整
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -1285,34 +1291,34 @@ Skylake）时，我们需要相应地调整
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -1327,19 +1333,19 @@ Skylake）时，我们需要相应地调整
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
@@ -1348,14 +1354,14 @@ Skylake）时，我们需要相应地调整
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
                     <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
@@ -1382,9 +1388,9 @@ Skylake）时，我们需要相应地调整
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -1401,34 +1407,34 @@ Skylake）时，我们需要相应地调整
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -1443,19 +1449,19 @@ Skylake）时，我们需要相应地调整
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j_0</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">32</span><span class="p">):</span>
@@ -1467,7 +1473,7 @@ Skylake）时，我们需要相应地调整
                         <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                            <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                         <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">ax0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
@@ -1475,13 +1481,13 @@ Skylake）时，我们需要相应地调整
                         <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">j_0</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">ax0</span><span class="p">)</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                        <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                        <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
 
 
-.. figure:: ../img/cpu_arch.png
+|image1|
 
 要了解为什么不同的循环变体会导致不同的性能，我们需要回顾一个事实，即访问
 ``A`` 和 ``B`` 中的任何内存块的速度并不一致。现代 CPU
@@ -1493,7 +1499,7 @@ Skylake）时，我们需要相应地调整
 因此，当你读取下一个元素时，它已经在缓存中。
 因此，具有连续内存访问的代码通常比随机访问内存不同部分的代码更快。
 
-.. figure:: ../img/tensor_func_loop_order.png
+|image2|
 
 现在让我们看看上面的迭代可视化，分析一下是怎么回事。
 在这个分析中，让我们关注最里面的两个循环：\ ``k`` 和
@@ -1511,6 +1517,9 @@ Skylake）时，我们需要相应地调整
 ^^^^
 
 作为练习，尝试不同的 ``j_factor`` 选择，看看它们如何影响代码的性能。
+
+.. |image1| image:: ../img/cpu_arch.png
+.. |image2| image:: ../img/tensor_func_loop_order.png
 
 .. raw:: latex
 
@@ -1530,8 +1539,8 @@ Skylake）时，我们需要相应地调整
     
     mod_transformed = transform(MyModule, jfactor=8)
     
-    rt_lib_transformed = tvm.build(mod_transformed, "llvm")
-    f_timer_transformed = rt_lib_transformed.time_evaluator("mm_relu", tvm.cpu())
+    rt_lib_transformed = tvm.compile(mod_transformed, "llvm")
+    f_timer_transformed = rt_lib_transformed.mod.time_evaluator("mm_relu", tvm.cpu())
     print("Time cost of transformed mod_transformed %g sec" % f_timer_transformed(a_nd, b_nd, c_nd).mean)
     # display the code below
     IPython.display.Code(mod_transformed.script(), language="python")
@@ -1544,7 +1553,7 @@ Skylake）时，我们需要相应地调整
 .. parsed-literal::
     :class: output
 
-    Time cost of transformed mod_transformed 0.000386721 sec
+    Time cost of transformed mod_transformed 0.000370322 sec
 
 
 
@@ -1559,9 +1568,9 @@ Skylake）时，我们需要相应地调整
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -1578,34 +1587,34 @@ Skylake）时，我们需要相应地调整
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -1620,19 +1629,19 @@ Skylake）时，我们需要相应地调整
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j_0</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
@@ -1644,7 +1653,7 @@ Skylake）时，我们需要相应地调整
                         <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                            <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                         <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">vk</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">ax0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
@@ -1652,7 +1661,7 @@ Skylake）时，我们需要相应地调整
                         <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">spatial</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">j_0</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">ax0</span><span class="p">)</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                         <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                        <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                        <span class="n">C</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
@@ -1741,9 +1750,9 @@ TensorIR
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -1760,34 +1769,34 @@ TensorIR
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -1802,19 +1811,19 @@ TensorIR
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
-            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mm_relu</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">B</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">C</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)):</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">func_attr</span><span class="p">({</span><span class="s2">&quot;tir.noalias&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="c1"># with T.block(&quot;root&quot;):</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">alloc_buffer</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
@@ -1823,14 +1832,14 @@ TensorIR
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_k</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="n">v_k</span><span class="p">,</span> <span class="n">v_j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">v_k</span><span class="p">,</span> <span class="n">v_j</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
                     <span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">])</span>
-                    <span class="n">C</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">C</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">v_i</span><span class="p">,</span> <span class="n">v_j</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     </pre></div>
 
 
@@ -1853,7 +1862,7 @@ TensorIR 函数。
 在本节中，让我们回顾一下到目前为止我们学到了什么。我们了解到，一个常见的机器学习编译过程遵循一系列程序变换。将
 TensorIR 变换过程与低级 NumPy 参考开发过程进行比较是很有趣的。
 
-.. figure:: ../img/standard_process.png
+|image1|
 
 上图显示了标准的开发过程。我们需要重复开发不同程序变体的过程，然后（如果它是编译语言，则构建）在感兴趣的平台上运行它们。
 
@@ -1863,18 +1872,21 @@ IRModule（程序）之间的程序变换。所以我们不仅可以通过开发
 变换是一个非常强大的工具，可以帮助我们简化开发成本并为流程引入更多自动化。本节介绍了通过
 TensorIR 对元张量函数的特定视角，我们将在未来涵盖更多视角。
 
-.. figure:: ../img/mlc_process.png
+|image2|
 
 值得注意的是，直接代码开发和变换在实践中同样重要：我们仍然可以利用大量领域专业知识来开发和优化部分程序，然后将其与基于变换的方法相结合。我们将在以后的章节中讨论如何将这两种实践结合起来。
 
 总结
 ~~~~
 
--  TensorIR 抽象
+- TensorIR 抽象
 
-   -  包含循环、多维缓冲区等常用元素
-   -  引入了一个封装循环计算要求的新结构\ **块**\ 。
-   -  可以在 Python AST 中构建（通过 TVMScript）
+  - 包含循环、多维缓冲区等常用元素
+  - 引入了一个封装循环计算要求的新结构\ **块**\ 。
+  - 可以在 Python AST 中构建（通过 TVMScript）
 
--  我们可以使用变换来创建不同的 TensorIR 变体。
--  通用 MLC 流程：开发、变换、构建。
+- 我们可以使用变换来创建不同的 TensorIR 变体。
+- 通用 MLC 流程：开发、变换、构建。
+
+.. |image1| image:: ../img/standard_process.png
+.. |image2| image:: ../img/mlc_process.png

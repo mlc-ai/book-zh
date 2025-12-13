@@ -3,7 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -177,13 +178,11 @@ Show Source
     <div class="document">
         <div class="page-content" role="main">
         
-  <div class="section" id="id1">
+  <section id="id1">
 <h1><span class="section-number">3. </span>端到端模型执行<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
-<div class="section" id="id2">
+<section id="id2">
 <h2><span class="section-number">3.1. </span>前言<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
-<div class="figure align-default">
-<img alt="../_images/tensor_func_linear_relu.png" src="../_images/tensor_func_linear_relu.png" />
-</div>
+<p><img alt="image1" src="../_images/mlc_process.png" /></p>
 <p>大多数 MLC
 过程可以看作是张量函数之间的转换。我们打算在上一节课中回答的主要问题是：</p>
 <ul class="simple">
@@ -191,25 +190,25 @@ Show Source
 <li><p>什么是可能的张量函数变换？</p></li>
 </ul>
 <p>在上一课中，我们主要关注点是元张量函数。在本次讲座中，我们将讨论如何构建端到端模型。</p>
-</div>
-<div class="section" id="id3">
+</section>
+<section id="id3">
 <h2><span class="section-number">3.2. </span>准备工作<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
 <p>首先，我们将导入必要的依赖项。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tvm</span>
-<span class="kn">from</span> <span class="nn">tvm</span> <span class="kn">import</span> <span class="n">relax</span>
-<span class="kn">from</span> <span class="nn">tvm.ir.module</span> <span class="kn">import</span> <span class="n">IRModule</span>
-<span class="kn">from</span> <span class="nn">tvm.script</span> <span class="kn">import</span> <span class="n">relax</span> <span class="k">as</span> <span class="n">R</span>
-<span class="kn">from</span> <span class="nn">tvm.script</span> <span class="kn">import</span> <span class="n">tir</span> <span class="k">as</span> <span class="n">T</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tvm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tvm</span><span class="w"> </span><span class="kn">import</span> <span class="n">relax</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tvm.ir.module</span><span class="w"> </span><span class="kn">import</span> <span class="n">IRModule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tvm.script</span><span class="w"> </span><span class="kn">import</span> <span class="n">relax</span> <span class="k">as</span> <span class="n">R</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tvm.script</span><span class="w"> </span><span class="kn">import</span> <span class="n">tir</span> <span class="k">as</span> <span class="n">T</span>
 </pre></div>
 </div>
-<div class="section" id="id4">
+<section id="id4">
 <h3><span class="section-number">3.2.1. </span>加载数据集<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <p>作为一个具体的例子，我们将在 fashion MNIST 数据集上使用一个模型。
 以下代码从 <code class="docutils literal notranslate"><span class="pre">torchvision</span></code> 下载并准备数据并转换成NumPy数组。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torchvision</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision</span>
 
 <span class="n">test_data</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span>
     <span class="n">root</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span>
@@ -225,28 +224,14 @@ Show Source
 <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
-<span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">100.0</span><span class="o">%</span>
 <span class="mf">100.0</span><span class="o">%</span>
-<span class="n">Extracting</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span>
-
-<span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
-<span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
 <span class="mf">100.0</span><span class="o">%</span>
-<span class="n">Extracting</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span>
-
-<span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
-<span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
 <span class="mf">100.0</span><span class="o">%</span>
-<span class="n">Extracting</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span>
-
-<span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
-<span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">fashion</span><span class="o">-</span><span class="n">mnist</span><span class="o">.</span><span class="n">s3</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">eu</span><span class="o">-</span><span class="n">central</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span>
-<span class="mf">100.0</span><span class="o">%</span><span class="n">Extracting</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="o">.</span><span class="n">gz</span> <span class="n">to</span> <span class="n">data</span><span class="o">/</span><span class="n">FashionMNIST</span><span class="o">/</span><span class="n">raw</span>
 </pre></div>
 </div>
 <p>我们可以绘制出我们希望能够预测的图像。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -256,38 +241,36 @@ Show Source
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Class:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="../_images/output_index_e758e2_5_0.png" src="../_images/output_index_e758e2_5_0.png" />
-</div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="p">:</span> <span class="n">Bag</span>
+</figure>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id5">
+</section>
+<section id="id5">
 <h3><span class="section-number">3.2.2. </span>下载模型参数<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span># Hide outputs
 !wget https://github.com/mlc-ai/web-data/raw/main/models/fasionmnist_mlp_params.pkl
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="id6">
+</section>
+</section>
+<section id="id6">
 <h2><span class="section-number">3.3. </span>端到端模型整合<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h2>
 <p>在本章中，我们将使用以下模型作为示例。这是一个两层神经网络，由两个全连接层和一个有
 relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 层。输出分数是未标准化的，但最大值仍然对应于最可能的类别。</p>
-<div class="figure align-default">
-<img alt="../_images/e2e_fashionmnist_mlp_model.png" src="../_images/e2e_fashionmnist_mlp_model.png" />
-</div>
+<p><img alt="image1" src="../_images/mlc_process.png" /></p>
 <p>让我们从模型的 Numpy 实现开始。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">numpy_mlp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">numpy_mlp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
     <span class="n">lv0</span> <span class="o">=</span> <span class="n">data</span> <span class="o">@</span> <span class="n">w0</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">b0</span>
     <span class="n">lv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">lv0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">lv2</span> <span class="o">=</span> <span class="n">lv1</span> <span class="o">@</span> <span class="n">w1</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">b1</span>
     <span class="k">return</span> <span class="n">lv2</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pickle</span> <span class="k">as</span> <span class="nn">pkl</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pkl</span>
 
 <span class="n">mlp_params</span> <span class="o">=</span> <span class="n">pkl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;fasionmnist_mlp_params.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">numpy_mlp</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span>
@@ -301,10 +284,11 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NumPy-MLP Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="o">-</span><span class="mf">13.617741</span>  <span class="o">-</span><span class="mf">23.764347</span>   <span class="o">-</span><span class="mf">8.766845</span>  <span class="o">-</span><span class="mf">14.175274</span>  <span class="o">-</span><span class="mf">12.962378</span>   <span class="o">-</span><span class="mf">9.517136</span>
-   <span class="o">-</span><span class="mf">4.7158275</span>   <span class="mf">2.538267</span>   <span class="mf">10.880611</span>   <span class="o">-</span><span class="mf">9.265209</span> <span class="p">]]</span>
-<span class="p">[</span><span class="mi">8</span><span class="p">]</span>
-<span class="n">NumPy</span><span class="o">-</span><span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Bag</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="mf">2.3660181e+01</span> <span class="o">-</span><span class="mf">1.0503739e+01</span> <span class="o">-</span><span class="mf">7.4466095e+00</span> <span class="o">-</span><span class="mf">6.7566099e+00</span>
+  <span class="o">-</span><span class="mf">3.5482716e+01</span> <span class="o">-</span><span class="mf">3.8117035e+01</span>  <span class="mf">5.7458729e-03</span> <span class="o">-</span><span class="mf">4.2515682e+01</span>
+  <span class="o">-</span><span class="mf">3.0048491e+01</span> <span class="o">-</span><span class="mf">4.1714348e+01</span><span class="p">]]</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">NumPy</span><span class="o">-</span><span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
 <p>上面的示例代码显示了利用高层NumPy数组操作，执行端到端模型执行的过程。</p>
@@ -312,11 +296,10 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 <p>为了说明底层细节，我们将再次用底层 NumPy 编写示例：</p>
 <ul class="simple">
 <li><p>我们将在使用循环而不是数组函数来演示循环计算。</p></li>
-<li><p>我们总是通过 <code class="docutils literal notranslate"><span class="pre">np.empty</span></code>
-显式分配数组并传递它们。（不包含数组初始化）</p></li>
+<li><p>我们总是通过 <code class="docutils literal notranslate"><span class="pre">np.empty</span></code> 显式分配数组并传递它们。（不包含数组初始化）</p></li>
 </ul>
 <p>下面的代码展示了同一模型的底层 NumPy 实现：</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lnumpy_linear0</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">W</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_linear0</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">W</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">128</span><span class="p">):</span>
@@ -330,12 +313,12 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
             <span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">lnumpy_relu0</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_relu0</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">128</span><span class="p">):</span>
             <span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">lnumpy_linear1</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">W</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_linear1</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">W</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
@@ -349,7 +332,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
             <span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">lnumpy_mlp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_mlp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
     <span class="n">lv0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
     <span class="n">lnumpy_linear0</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">lv0</span><span class="p">)</span>
 
@@ -371,20 +354,20 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Low-level Numpy MLP Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Bag</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="tvmscript-irmodule">
+</section>
+<section id="tvmscript-irmodule">
 <h2><span class="section-number">3.4. </span>在 TVMScript 中构建端到端 IRModule<a class="headerlink" href="#tvmscript-irmodule" title="Permalink to this heading">¶</a></h2>
 <p>考虑到低级 NumPy 示例，现在我们准备为端到端模型执行引入 MLC 抽象。
 下面的代码块显示了模型的 TVMScript 实现。</p>
 <p>有了底级 NumPy 代码作为参考，现在我们准备利用 MLC
 抽象来实现端到端模型运行。下面的代码展示了模型的 TVMScript 实现。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tvm</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">ir_module</span>
-<span class="k">class</span> <span class="nc">MyModule</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModule</span><span class="p">:</span>
     <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-    <span class="k">def</span> <span class="nf">relu0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">relu0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)</span>
         <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">)</span>
@@ -394,7 +377,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
                 <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 
     <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-    <span class="k">def</span> <span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
                 <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
                 <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
                 <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
@@ -416,7 +399,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
                 <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
 
     <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
@@ -434,14 +417,10 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 函数）。 Relax 函数是一种表示上层神经网络执行的全新抽象。</p>
 <p>同样，对比查看 TVMScript 代码和底级 NumPy
 代码会对我们理解代码有很大帮助。我们这里将详细介绍它们中的每一个元素。由于我们已经了解了元张量函数，因此我们将专注于高层的执行部分。</p>
-<div class="figure align-default">
-<img alt="../_images/e2e_compare_to_lnumpy.png" src="../_images/e2e_compare_to_lnumpy.png" />
-</div>
-<div class="section" id="id7">
+<p><img alt="image1" src="../_images/mlc_process.png" /></p>
+<section id="id7">
 <h3><span class="section-number">3.4.1. </span>计算图<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
-<div class="figure align-default">
-<img alt="../_images/e2e_computational_graph_call_tir.png" src="../_images/e2e_computational_graph_call_tir.png" />
-</div>
+<p><img alt="image2" src="../_images/e2e_computational_graph_call_tir.png" /></p>
 <p>使用图 (graph) 来可视化高层模型执行通常很有帮助。 上图是 <code class="docutils literal notranslate"><span class="pre">main</span></code>
 函数的计算图视图：</p>
 <ul class="simple">
@@ -451,8 +430,8 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 <p>我们在之前的课程中已经看到了这种可视化。
 图本身可以看作是一种抽象，在机器学习框架中通常称为<strong>计算图
 (computational graph)</strong>。</p>
-</div>
-<div class="section" id="call-dps-packed">
+</section>
+<section id="call-dps-packed">
 <h3><span class="section-number">3.4.2. </span><code class="docutils literal notranslate"><span class="pre">call_dps_packed</span></code><a class="headerlink" href="#call-dps-packed" title="Permalink to this heading">¶</a></h3>
 <p>您可能已经注意到的一件事是，计算图中的每个操作步骤都包含一个<code class="docutils literal notranslate"><span class="pre">R.call_dps_packed</span></code>操作。
 这是引入元张量函数的过程：</p>
@@ -461,7 +440,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 </div>
 <p>为了解释 <code class="docutils literal notranslate"><span class="pre">R.call_dps_packed</span></code> 的含义，让我们回顾一下操作的等效底层
 NumPy 实现，如下所示：</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lnumpy_call_dps_packed</span><span class="p">(</span><span class="n">prim_func</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_call_dps_packed</span><span class="p">(</span><span class="n">prim_func</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">prim_func</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span>
@@ -476,7 +455,7 @@ NumPy 实现，如下所示：</p>
 例如，我们可能会选择提前分配所有输出内存，然后运行，我们将在以后的课程中介绍。</p>
 <p>一个很自然的问题：为什么我们需要 <code class="docutils literal notranslate"><span class="pre">call_dps_packed</span></code>？
 这是因为我们的元张量函数采用以下调用约定：</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">low_level_prim_func</span><span class="p">(</span><span class="n">in0</span><span class="p">,</span> <span class="n">in1</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">low_level_prim_func</span><span class="p">(</span><span class="n">in0</span><span class="p">,</span> <span class="n">in1</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
     <span class="c1"># implementations</span>
 </pre></div>
 </div>
@@ -486,7 +465,7 @@ NumPy 实现，如下所示：</p>
 请注意，并非所有张量操作都可以通过这种方式呈现（比如，有些操作的输出形状取决于输入）。
 然而，在通常的实践中，如果可能的话，以这种风格编写底层函数通常是有帮助的。</p>
 <p>虽然可以通过显式分配中间结果并调用每个函数来将目标传递的函数组装在一起，但很难将以下代码转换为计算图形式。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lnumpy_mlp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_mlp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
     <span class="n">lv0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
     <span class="n">lnumpy_linear0</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">lv0</span><span class="p">)</span>
 
@@ -498,9 +477,7 @@ NumPy 实现，如下所示：</p>
     <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 </div>
-<div class="figure align-default">
-<img alt="../_images/e2e_computational_graph_numpy.png" src="../_images/e2e_computational_graph_numpy.png" />
-</div>
+<p><img alt="image1" src="../_images/mlc_process.png" /></p>
 <p>我们当然可以尝试一下 :)
 上图是通过简单地将函数输入连接到函数来将<code class="docutils literal notranslate"><span class="pre">lnumpy_mlp</span></code>拟合成“类计算图”形式的一种可能的“失败尝试”。</p>
 <p>我们可以发现它失去了之前计算图的一些特性。
@@ -522,7 +499,7 @@ free</strong>的。</p>
 <p>我们还可以在底层 NumPy 中看到 <code class="docutils literal notranslate"><span class="pre">call_dps_packed</span></code> 的作用。
 现在我们已经定义了 <code class="docutils literal notranslate"><span class="pre">lnumpy_call_dps_packed</span></code>，我们可以将底层 NumPy
 代码重写为：</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lnumpy_mlp_with_call_dps_packed</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_mlp_with_call_dps_packed</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">):</span>
     <span class="n">lv0</span> <span class="o">=</span> <span class="n">lnumpy_call_dps_packed</span><span class="p">(</span><span class="n">lnumpy_linear0</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">b0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
     <span class="n">lv1</span> <span class="o">=</span> <span class="n">lnumpy_call_dps_packed</span><span class="p">(</span><span class="n">lnumpy_relu0</span><span class="p">,</span> <span class="p">(</span><span class="n">lv0</span><span class="p">,</span> <span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">lnumpy_call_dps_packed</span><span class="p">(</span><span class="n">lnumpy_linear1</span><span class="p">,</span> <span class="p">(</span><span class="n">lv1</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
@@ -539,12 +516,12 @@ free</strong>的。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Low-level Numpy with CallTIR Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="k">with</span> <span class="n">CallTIR</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Bag</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="k">with</span> <span class="n">CallTIR</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
 <p>实际上，最底层的实现会有显式的内存分配，所以<code class="docutils literal notranslate"><span class="pre">call_dps_packed</span></code>主要是为了让我们在生成实际实现之前继续做一些高层的转换。</p>
-</div>
-<div class="section" id="dataflow-block">
+</section>
+<section id="dataflow-block">
 <h3><span class="section-number">3.4.3. </span>Dataflow Block<a class="headerlink" href="#dataflow-block" title="Permalink to this heading">¶</a></h3>
 <p>Relax 函数中的另一个重要元素是 <code class="docutils literal notranslate"><span class="pre">R.dataflow()</span></code> 范围标注：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">R</span><span class="o">.</span><span class="n">dataflow</span><span class="p">():</span>
@@ -562,7 +539,7 @@ block中，所有操作都需要side-effect free。 在dataflow
 block之外，操作可能包含side-effect。 下面的程序是一个包含两个dataflow
 block的示例程序。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
         <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
         <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
         <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
@@ -582,8 +559,8 @@ block的示例程序。</p>
 </div>
 <p>我们的大部分课程只会处理计算图（dataflow
 blocks），但最好能够理解背后的原因。</p>
-</div>
-<div class="section" id="id8">
+</section>
+<section id="id8">
 <h3><span class="section-number">3.4.4. </span>章节小结<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <p>到目前为止，我们已经完成了一个 Relax
 程序的示例，并涵盖了大部分元素，包括：</p>
@@ -594,9 +571,9 @@ blocks），但最好能够理解背后的原因。</p>
 </ul>
 <p>这些元素应该让我们能够开始端到端的模型执行和编译。
 当我们在后面的章节中遇到新概念时，我们还将介绍它们。</p>
-</div>
-</div>
-<div class="section" id="id9">
+</section>
+</section>
+<section id="id9">
 <h2><span class="section-number">3.5. </span>构建并运行模型<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h2>
 <p>在上一节中，我们讨论了端到端模型执行的抽象。 本节介绍如何构建和运行
 IRModule。 让我们首先回顾一下我们现有的 IRModule。</p>
@@ -611,9 +588,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .hll { background-color: #ffffcc }
 .output_html { background: #f8f8f8; }
 .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-.output_html .err { border: 1px solid #FF0000 } /* Error */
+.output_html .err { border: 1px solid #F00 } /* Error */
 .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-.output_html .o { color: #666666 } /* Operator */
+.output_html .o { color: #666 } /* Operator */
 .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
 .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
 .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -630,34 +607,34 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
 .output_html .gs { font-weight: bold } /* Generic.Strong */
 .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.output_html .gt { color: #0044DD } /* Generic.Traceback */
+.output_html .gt { color: #04D } /* Generic.Traceback */
 .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
 .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
 .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
 .output_html .kp { color: #008000 } /* Keyword.Pseudo */
 .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
 .output_html .kt { color: #B00040 } /* Keyword.Type */
-.output_html .m { color: #666666 } /* Literal.Number */
+.output_html .m { color: #666 } /* Literal.Number */
 .output_html .s { color: #BA2121 } /* Literal.String */
 .output_html .na { color: #687822 } /* Name.Attribute */
 .output_html .nb { color: #008000 } /* Name.Builtin */
-.output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.output_html .no { color: #880000 } /* Name.Constant */
-.output_html .nd { color: #AA22FF } /* Name.Decorator */
+.output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+.output_html .no { color: #800 } /* Name.Constant */
+.output_html .nd { color: #A2F } /* Name.Decorator */
 .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
 .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-.output_html .nf { color: #0000FF } /* Name.Function */
+.output_html .nf { color: #00F } /* Name.Function */
 .output_html .nl { color: #767600 } /* Name.Label */
-.output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
 .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
 .output_html .nv { color: #19177C } /* Name.Variable */
-.output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.output_html .w { color: #bbbbbb } /* Text.Whitespace */
-.output_html .mb { color: #666666 } /* Literal.Number.Bin */
-.output_html .mf { color: #666666 } /* Literal.Number.Float */
-.output_html .mh { color: #666666 } /* Literal.Number.Hex */
-.output_html .mi { color: #666666 } /* Literal.Number.Integer */
-.output_html .mo { color: #666666 } /* Literal.Number.Oct */
+.output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.output_html .w { color: #BBB } /* Text.Whitespace */
+.output_html .mb { color: #666 } /* Literal.Number.Bin */
+.output_html .mf { color: #666 } /* Literal.Number.Float */
+.output_html .mh { color: #666 } /* Literal.Number.Hex */
+.output_html .mi { color: #666 } /* Literal.Number.Integer */
+.output_html .mo { color: #666 } /* Literal.Number.Oct */
 .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
 .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
 .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -672,19 +649,19 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
 .output_html .ss { color: #19177C } /* Literal.String.Symbol */
 .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.output_html .fm { color: #0000FF } /* Name.Function.Magic */
+.output_html .fm { color: #00F } /* Name.Function.Magic */
 .output_html .vc { color: #19177C } /* Name.Variable.Class */
 .output_html .vg { color: #19177C } /* Name.Variable.Global */
 .output_html .vi { color: #19177C } /* Name.Variable.Instance */
 .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-.output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+.output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
 <span class="c1"># from tvm.script import tir as T</span>
 <span class="c1"># from tvm.script import relax as R</span>
 
 <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-<span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
     <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-    <span class="k">def</span> <span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
@@ -699,7 +676,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">])</span>
                 <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                 <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
@@ -709,7 +686,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
 
     <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-    <span class="k">def</span> <span class="nf">relu0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">relu0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
         <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
@@ -719,10 +696,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                 <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                 <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
 
     <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
@@ -732,15 +709,16 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
             <span class="n">out</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_dps_packed</span><span class="p">(</span><span class="s2">&quot;linear0&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">lv1</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">b1</span><span class="p">),</span> <span class="n">out_sinfo</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
             <span class="n">R</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span>
-</pre></div><p>我们调用 <code class="docutils literal notranslate"><span class="pre">relax.build</span></code> 来构建这个函数。 注意：Relax
+</pre></div><p>我们调用 <code class="docutils literal notranslate"><span class="pre">tvm.compile</span></code> 来构建这个函数。 注意：Relax
 仍在开发中，因此某些 API 可能会更改。
 不过，我们的主要目标是熟悉端到端模型的整体 MLC
 流程（构造、转换、构建）。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ex</span> <span class="o">=</span> <span class="n">relax</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">MyModule</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">Target</span><span class="p">(</span><span class="s2">&quot;llvm&quot;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<span class="n">ex</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">MyModule</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 <span class="nb">type</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tvm</span><span class="o">.</span><span class="n">relax</span><span class="o">.</span><span class="n">vm_build</span><span class="o">.</span><span class="n">Executable</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tvm</span><span class="o">.</span><span class="n">relax</span><span class="o">.</span><span class="n">vm_build</span><span class="o">.</span><span class="n">VMExecutable</span>
 </pre></div>
 </div>
 <p>build
@@ -753,8 +731,8 @@ VM设计的一种文件格式）。
 </div>
 <p>现在我们准备好运行模型了。 我们首先构建包含输入数据和权重的 tvm
 NDArray。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data_nd</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">))</span>
-<span class="n">nd_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mlp_params</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data_nd</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">))</span>
+<span class="n">nd_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mlp_params</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 </pre></div>
 </div>
 <p>然后我们可以通过传入输入参数和权重来运行 <code class="docutils literal notranslate"><span class="pre">main</span></code> 函数。</p>
@@ -766,8 +744,9 @@ NDArray。</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">nd_res</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="o">-</span><span class="mf">13.617741</span>  <span class="o">-</span><span class="mf">23.764349</span>   <span class="o">-</span><span class="mf">8.766844</span>  <span class="o">-</span><span class="mf">14.175275</span>  <span class="o">-</span><span class="mf">12.962375</span>   <span class="o">-</span><span class="mf">9.517134</span>
-   <span class="o">-</span><span class="mf">4.715829</span>    <span class="mf">2.5382652</span>  <span class="mf">10.880614</span>   <span class="o">-</span><span class="mf">9.26521</span>  <span class="p">]]</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="mf">2.3660181e+01</span> <span class="o">-</span><span class="mf">1.0503730e+01</span> <span class="o">-</span><span class="mf">7.4466133e+00</span> <span class="o">-</span><span class="mf">6.7566080e+00</span>
+  <span class="o">-</span><span class="mf">3.5482712e+01</span> <span class="o">-</span><span class="mf">3.8117031e+01</span>  <span class="mf">5.7430267e-03</span> <span class="o">-</span><span class="mf">4.2515678e+01</span>
+  <span class="o">-</span><span class="mf">3.0048483e+01</span> <span class="o">-</span><span class="mf">4.1714355e+01</span><span class="p">]]</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">main</span></code>
@@ -777,19 +756,19 @@ NDArray。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModule Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModule</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Bag</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModule</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id10">
+</section>
+<section id="id10">
 <h2><span class="section-number">3.6. </span>在环境中集成现有运行库<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h2>
 <p>在上一节中，我们展示了如何构建一个包含元张量函数实现以及计算图部分的
 IRModule。 在许多情况下，我们可能希望将现有的库函数集成到 MLC 过程中。</p>
 <p>下面的 IRModule 展示了如何做到这一点：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tvm</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">ir_module</span>
-<span class="k">class</span> <span class="nc">MyModuleWithExternCall</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModuleWithExternCall</span><span class="p">:</span>
     <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
@@ -810,15 +789,15 @@ IRModule。 在许多情况下，我们可能希望将现有的库函数集成�
 </div>
 <p>这些字符串是我们期望在模型执行期间的运行时函数 (runtime function)
 的名称。</p>
-<div class="section" id="id11">
+<section id="id11">
 <h3><span class="section-number">3.6.1. </span>注册运行时函数<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
 <p>为了能够执行调用外部函数的代码，我们需要注册相应的函数。
 下面的代码注册了函数的两个实现：</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tvm</span><span class="o">.</span><span class="n">register_func</span><span class="p">(</span><span class="s2">&quot;env.linear&quot;</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">torch_linear</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
-                 <span class="n">w</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
-                 <span class="n">b</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
-                 <span class="n">out</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tvm</span><span class="o">.</span><span class="n">register_global_func</span><span class="p">(</span><span class="s2">&quot;env.linear&quot;</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">torch_linear</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">w</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">b</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">out</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
     <span class="n">x_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_dlpack</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">w_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_dlpack</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
     <span class="n">b_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_dlpack</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
@@ -826,9 +805,9 @@ IRModule。 在许多情况下，我们可能希望将现有的库函数集成�
     <span class="n">torch</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">x_torch</span><span class="p">,</span> <span class="n">w_torch</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out_torch</span><span class="p">)</span>
     <span class="n">torch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">out_torch</span><span class="p">,</span> <span class="n">b_torch</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out_torch</span><span class="p">)</span>
 
-<span class="nd">@tvm</span><span class="o">.</span><span class="n">register_func</span><span class="p">(</span><span class="s2">&quot;env.relu&quot;</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">lnumpy_relu</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
-                <span class="n">out</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">):</span>
+<span class="nd">@tvm</span><span class="o">.</span><span class="n">register_global_func</span><span class="p">(</span><span class="s2">&quot;env.relu&quot;</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lnumpy_relu</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                <span class="n">out</span><span class="p">:</span> <span class="n">tvm</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
     <span class="n">x_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_dlpack</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">out_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_dlpack</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
     <span class="n">torch</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x_torch</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span> <span class="n">out</span><span class="o">=</span><span class="n">out_torch</span><span class="p">)</span>
@@ -846,11 +825,12 @@ Tensor/NDArray 而无需参与数据复制。 <code class="docutils literal notr
 cuDNN 或我们自己的库实现。</p>
 <p>这个特定示例在 Python 中执行注册。 实际上，我们可以用不同的语言（例如
 C++）注册没有 Python 依赖的函数。 我们将在以后的课程中介绍更多内容。</p>
-</div>
-<div class="section" id="build-and-run">
+</section>
+<section id="build-and-run">
 <h3><span class="section-number">3.6.2. </span>Build and Run<a class="headerlink" href="#build-and-run" title="Permalink to this heading">¶</a></h3>
 <p>现在我们可以构建并运行<code class="docutils literal notranslate"><span class="pre">MyModuleWithExternCall</span></code>，我们可以验证模型得到了相同的结果。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ex</span> <span class="o">=</span> <span class="n">relax</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">MyModuleWithExternCall</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">Target</span><span class="p">(</span><span class="s2">&quot;llvm&quot;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<span class="n">ex</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">MyModuleWithExternCall</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 <span class="n">vm</span> <span class="o">=</span> <span class="n">relax</span><span class="o">.</span><span class="n">VirtualMachine</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">tvm</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
 
 <span class="n">nd_res</span> <span class="o">=</span> <span class="n">vm</span><span class="p">[</span><span class="s2">&quot;main&quot;</span><span class="p">](</span><span class="n">data_nd</span><span class="p">,</span>
@@ -863,19 +843,19 @@ C++）注册没有 Python 依赖的函数。 我们将在以后的课程中介�
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModuleWithExternCall Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithExternCall</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Bag</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithExternCall</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="mixing-tensorir-code-and-libraries">
+</section>
+</section>
+<section id="mixing-tensorir-code-and-libraries">
 <h2><span class="section-number">3.7. </span>Mixing TensorIR Code and Libraries<a class="headerlink" href="#mixing-tensorir-code-and-libraries" title="Permalink to this heading">¶</a></h2>
 <p>在上一个示例中，我们构建了一个
 IRModule，其中所有元操作都被分派给运行库。有时将两者混合使用会有所帮助。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@tvm</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">ir_module</span>
-<span class="k">class</span> <span class="nc">MyModuleMixture</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModuleMixture</span><span class="p">:</span>
     <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-    <span class="k">def</span> <span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
                 <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
                 <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
                 <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
@@ -897,7 +877,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
                 <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
 
     <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
              <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="s2">&quot;float32&quot;</span><span class="p">),</span>
@@ -913,7 +893,8 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 </div>
 <p>上面的代码块显示了一个示例，其中 <code class="docutils literal notranslate"><span class="pre">linear0</span></code> 仍然在 <code class="docutils literal notranslate"><span class="pre">TensorIR</span></code>
 中实现，而其余函数被重定向到库函数。 我们可以构建并运行以验证结果。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ex</span> <span class="o">=</span> <span class="n">relax</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">MyModuleMixture</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">Target</span><span class="p">(</span><span class="s2">&quot;llvm&quot;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<span class="n">ex</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">MyModuleMixture</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 <span class="n">vm</span> <span class="o">=</span> <span class="n">relax</span><span class="o">.</span><span class="n">VirtualMachine</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">tvm</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
 
 <span class="n">nd_res</span> <span class="o">=</span> <span class="n">vm</span><span class="p">[</span><span class="s2">&quot;main&quot;</span><span class="p">](</span><span class="n">data_nd</span><span class="p">,</span>
@@ -926,11 +907,11 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModuleMixture Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleMixture</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Bag</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleMixture</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="irmodule">
+</section>
+<section id="irmodule">
 <h2><span class="section-number">3.8. </span>将参数绑定到 IRModule<a class="headerlink" href="#irmodule" title="Permalink to this heading">¶</a></h2>
 <p>在到目前为止的所有示例中，我们通过显式传递参数来构造主函数。
 在许多情况下，将参数绑定为附加到 IRModule
@@ -948,9 +929,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .hll { background-color: #ffffcc }
 .output_html { background: #f8f8f8; }
 .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-.output_html .err { border: 1px solid #FF0000 } /* Error */
+.output_html .err { border: 1px solid #F00 } /* Error */
 .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-.output_html .o { color: #666666 } /* Operator */
+.output_html .o { color: #666 } /* Operator */
 .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
 .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
 .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -967,34 +948,34 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
 .output_html .gs { font-weight: bold } /* Generic.Strong */
 .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.output_html .gt { color: #0044DD } /* Generic.Traceback */
+.output_html .gt { color: #04D } /* Generic.Traceback */
 .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
 .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
 .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
 .output_html .kp { color: #008000 } /* Keyword.Pseudo */
 .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
 .output_html .kt { color: #B00040 } /* Keyword.Type */
-.output_html .m { color: #666666 } /* Literal.Number */
+.output_html .m { color: #666 } /* Literal.Number */
 .output_html .s { color: #BA2121 } /* Literal.String */
 .output_html .na { color: #687822 } /* Name.Attribute */
 .output_html .nb { color: #008000 } /* Name.Builtin */
-.output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.output_html .no { color: #880000 } /* Name.Constant */
-.output_html .nd { color: #AA22FF } /* Name.Decorator */
+.output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+.output_html .no { color: #800 } /* Name.Constant */
+.output_html .nd { color: #A2F } /* Name.Decorator */
 .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
 .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-.output_html .nf { color: #0000FF } /* Name.Function */
+.output_html .nf { color: #00F } /* Name.Function */
 .output_html .nl { color: #767600 } /* Name.Label */
-.output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
 .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
 .output_html .nv { color: #19177C } /* Name.Variable */
-.output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.output_html .w { color: #bbbbbb } /* Text.Whitespace */
-.output_html .mb { color: #666666 } /* Literal.Number.Bin */
-.output_html .mf { color: #666666 } /* Literal.Number.Float */
-.output_html .mh { color: #666666 } /* Literal.Number.Hex */
-.output_html .mi { color: #666666 } /* Literal.Number.Integer */
-.output_html .mo { color: #666666 } /* Literal.Number.Oct */
+.output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.output_html .w { color: #BBB } /* Text.Whitespace */
+.output_html .mb { color: #666 } /* Literal.Number.Bin */
+.output_html .mf { color: #666 } /* Literal.Number.Float */
+.output_html .mh { color: #666 } /* Literal.Number.Hex */
+.output_html .mi { color: #666 } /* Literal.Number.Integer */
+.output_html .mo { color: #666 } /* Literal.Number.Oct */
 .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
 .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
 .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -1009,19 +990,19 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
 .output_html .ss { color: #19177C } /* Literal.String.Symbol */
 .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.output_html .fm { color: #0000FF } /* Name.Function.Magic */
+.output_html .fm { color: #00F } /* Name.Function.Magic */
 .output_html .vc { color: #19177C } /* Name.Variable.Class */
 .output_html .vg { color: #19177C } /* Name.Variable.Global */
 .output_html .vi { color: #19177C } /* Name.Variable.Instance */
 .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-.output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+.output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
 <span class="c1"># from tvm.script import tir as T</span>
 <span class="c1"># from tvm.script import relax as R</span>
 
 <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-<span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
     <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-    <span class="k">def</span> <span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
@@ -1036,7 +1017,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">])</span>
                 <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                 <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
@@ -1046,7 +1027,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
 
     <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">R</span><span class="o">.</span><span class="n">dataflow</span><span class="p">():</span>
             <span class="n">lv0</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_dps_packed</span><span class="p">(</span><span class="s2">&quot;linear0&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;relax.expr.Constant&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;relax.expr.Constant&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="n">out_sinfo</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
             <span class="n">lv1</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_dps_packed</span><span class="p">(</span><span class="s2">&quot;env.relu&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">lv0</span><span class="p">,),</span> <span class="n">out_sinfo</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
@@ -1060,7 +1041,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 对应于一个存储常量的隐式字典（它没有显示为脚本的一部分，但仍然是
 IRModule 的一部分）。 如果我们构建转换后的
 IRModule，我们现在可以通过传入输入数据来调用该函数。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ex</span> <span class="o">=</span> <span class="n">relax</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">MyModuleWithParams</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">Target</span><span class="p">(</span><span class="s2">&quot;llvm&quot;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;llvm&quot;</span><span class="p">)</span>
+<span class="n">ex</span> <span class="o">=</span> <span class="n">tvm</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">MyModuleWithParams</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 <span class="n">vm</span> <span class="o">=</span> <span class="n">relax</span><span class="o">.</span><span class="n">VirtualMachine</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">tvm</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
 
 <span class="n">nd_res</span> <span class="o">=</span> <span class="n">vm</span><span class="p">[</span><span class="s2">&quot;main&quot;</span><span class="p">](</span><span class="n">data_nd</span><span class="p">)</span>
@@ -1069,11 +1051,11 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModuleWithParams Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithParams</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Bag</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithParams</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id12">
+</section>
+<section id="id12">
 <h2><span class="section-number">3.9. </span>讨论<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h2>
 <p>在本章中，我们讨论了许多描述端到端模型执行的方法。
 我们可能已经注意到的一件事是我们回到了<strong>抽象和实现</strong>的主题。</p>
@@ -1085,9 +1067,7 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。</p>
 <p>到目前为止，我们已经介绍了一些转换端到端 IRModule
 的方法（例如参数绑定）。 让我们回到 MLC 的共同主题：MLC
 过程是在不同的抽象表示之间执行并在它们之间进行转换。</p>
-<div class="figure align-default">
-<img alt="../_images/mlc_process.png" src="../_images/mlc_process.png" />
-</div>
+<p><img alt="image1" src="../_images/mlc_process.png" /></p>
 <p>端到端执行中有许多可能的转换。 例如，我们可以使用 <code class="docutils literal notranslate"><span class="pre">MyModuleMixture</span></code>
 中的 <code class="docutils literal notranslate"><span class="pre">TensorIR</span></code> 函数，并使用上一课中讲授的调度操作更改 <code class="docutils literal notranslate"><span class="pre">linear0</span></code>
 函数。 在其他情况下，我们可能希望将高层模型执行转换为库函数调用和
@@ -1098,8 +1078,8 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。</p>
 在实践中，一个真正的神经网络模型可以包含数百层，因此手动写出来是不可行的。
 尽管如此，脚本格式仍然有助于我们了解正在发生的事情并进行交互式开发。
 我们还将在以后的课程中了解更多以编程方式构建 IRModule 的方法。</p>
-</div>
-<div class="section" id="id13">
+</section>
+<section id="id13">
 <h2><span class="section-number">3.10. </span>总结<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>计算图抽象有助于将元张量函数拼接在一起以进行端到端执行。</p></li>
@@ -1111,8 +1091,8 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。</p>
 </li>
 <li><p>计算图允许调用环境库函数和 <code class="docutils literal notranslate"><span class="pre">TensorIR</span></code> 函数。</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
         </div>

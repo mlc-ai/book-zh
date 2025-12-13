@@ -3,7 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -177,7 +178,7 @@ Show Source
     <div class="document">
         <div class="page-content" role="main">
         
-  <div class="section" id="chap-introduction">
+  <section id="chap-introduction">
 <span id="id1"></span><h1><span class="section-number">1. </span>概述<a class="headerlink" href="#chap-introduction" title="Permalink to this heading">¶</a></h1>
 <p>机器学习应用程序已经无处不在。我们的智能家居设备由自然语言处理（NLP）和语音识别模型驱动，自动驾驶技术以计算机视觉模型为支柱，还有推荐系统帮助我们在探索时发现新内容。
 同样有趣的是AI应用的部署环境是非常丰富的。推荐系统算法通常由大型公司部署在云平台上；当我们谈论自动驾驶时，我们首先想到的是强大的
@@ -191,12 +192,14 @@ GPU 上），部署包含非标准算子的深度学习模型仍然需要大量�
 上述许多例子都与机器学习推理相关——即在获得模型权重后进行预测的过程。同时，我们还发现将训练
 (Training)
 过程本身部署到不同环境会变得越来越重要。这些需求源于出于隐私保护原因，或将模型学习扩展到分布式节点集群的需要，或需要将模型更新保持在用户设备的本地。不同的建模选择和推理/训练场景为机器学习的生产和部署增加了更多的复杂性。</p>
-<div class="figure align-default" id="id7">
+<figure class="align-default" id="id7">
 <span id="fig-intro-gap"></span><img alt="../_images/intro-gap.png" src="../_images/intro-gap.png" />
-<p class="caption"><span class="caption-number">Fig. 1.1 </span><span class="caption-text">机器学习应用与部署的区别</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1.1 </span><span class="caption-text">机器学习应用与部署的区别</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>本课程将讨论如何把机器学习从开发、研究阶段，引入到生产环境。我们将讨论一系列促进机器学习算法落地部署的方法。由于机器学习和开源系统正在开发新技术，机器学习落地部署仍然是一个开放且活跃的领域。然而，我们开始看到一些共性问题和话题，最终成为本课程的主题。</p>
-<div class="section" id="id2">
+<section id="id2">
 <h2><span class="section-number">1.1. </span>什么是机器学习编译<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
 <p>机器学习编译 (machine learning compilation, MLC)
 是指，将机器学习算法从开发阶段，通过变换和优化算法，使其变成部署状态。</p>
@@ -207,10 +210,12 @@ PyTorch、TensorFlow 或 JAX
 <p><strong>部署形式</strong>
 是指执行机器学习应用程序所需的形式。它通常涉及机器学习模型的每个步骤的支撑代码、管理资源（例如内存）的控制器，以及与应用程序开发环境的接口（例如用于
 android 应用程序的 java API）。</p>
-<div class="figure align-default" id="id8">
+<figure class="align-default" id="id8">
 <span id="fig-dev-deploy-form"></span><img alt="../_images/dev-deploy-form.png" src="../_images/dev-deploy-form.png" />
-<p class="caption"><span class="caption-number">Fig. 1.1.1 </span><span class="caption-text">开发与部署形式</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1.1.1 </span><span class="caption-text">开发与部署形式</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>我们使用术语“编译
 (compilation)”，因为可以将这个过程视为与传统编译器所做的非常相似的过程，即编译器将我们的应用程序采用开发形式，并将它们编译为可以部署的库。但是，机器学习编译在很多方面仍然不同于传统编译。</p>
 <p>首先，这个过程不一定涉及代码生成。例如，部署形式可以是一组预定义的库函数，而
@@ -230,8 +235,8 @@ TensorCore）的代码来做到这一点。</p>
 的通用优化形式是不同形式的优化，以最小化内存使用或提高执行效率的方式转换模型执行。</p>
 <p>这些目标没有严格的界限。例如，集成和硬件加速也可以被视为通用优化。根据具体的应用场景，我们可能对一些模型和生产环境对感兴趣，或者我们可能对部署到多个并选择最具成本效益的问题感兴趣。</p>
 <p>重要的是，机器学习编译不一定表示单一稳定的解决方案。事实上，随着硬件和模型数量的增长，许多机器学习编译实践涉及与来自不同背景的开发人员的合作。硬件开发人员需要支持他们最新的硬件加速，机器学习工程师需要实现额外的优化，而同时算法工程师也引入了新模型。</p>
-</div>
-<div class="section" id="id3">
+</section>
+<section id="id3">
 <h2><span class="section-number">1.2. </span>为什么学习机器学习编译<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
 <p>本课程将机器学习编译作为一种方法论和与之对应的工具集来讲解。这些工具可以与常见的机器学习系统一起使用，或简单地在常见的机器学习系统中工作，从而为用户提供价值。
 对于在从事机器学习工作工程师，机器学习编译提供了以基础的解决问题的方法和工具。它有助于回答我们可以采用什么方法来特定模型的部署和内存效率，如何将优化模型的单个部分的经验推广到更端到端解决方案，等一系列问题。
@@ -243,13 +248,15 @@ TensorCore）的代码来做到这一点。</p>
 API、架构和连接组件方面发挥着越来越重要的作用。 最后，学习 MLC
 本身很有趣。借助这套现代机器学习编译工具，我们可以进入机器学习模型从高级、代码优化到裸机的各个阶段。端到端
 (end to end) 地了解这里发生的事情并使用它们来解决我们的问题。</p>
-</div>
-<div class="section" id="id4">
+</section>
+<section id="id4">
 <h2><span class="section-number">1.3. </span>机器学习编译的关键要素<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
-<div class="figure align-default" id="id9">
+<figure class="align-default" id="id9">
 <span id="fig-mlc-elements"></span><img alt="../_images/mlc-elements.png" src="../_images/mlc-elements.png" />
-<p class="caption"><span class="caption-number">Fig. 1.3.1 </span><span class="caption-text">机器学习编译关键元素</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1.3.1 </span><span class="caption-text">机器学习编译关键元素</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>在前面的部分中，我们概括地讨论了机器学习编译。现在，我们会深入探讨机器学习编译的一些关键要素。让我们首先回顾一个两层神经网络模型执行的例子。</p>
 <p>在这个特定的模型中，我们通过展平输入图像中的像素来获取向量
 (Vector)；然后，我们应用线性变换，将输入图像投影到长度为 200
@@ -259,10 +266,12 @@ API、架构和连接组件方面发挥着越来越重要的作用。 最后，�
 是执行中最重要的元素。张量是表示神经网络模型执行的输入、输出和中间结果的多维数组。</p>
 <p><strong>张量函数 (Tensor functions)</strong>
 神经网络的“知识”被编码在权重和接受张量和输出张量的计算序列中。我们将这些计算称为张量函数。值得注意的是，张量函数不需要对应于神经网络计算的单个步骤。部分计算或整个端到端计算也可以看作张量函数。</p>
-<div class="figure align-default" id="id10">
+<figure class="align-default" id="id10">
 <span id="fig-mlc-elem-transform"></span><img alt="../_images/mlc-elem-transform.png" src="../_images/mlc-elem-transform.png" />
-<p class="caption"><span class="caption-number">Fig. 1.3.2 </span><span class="caption-text">机器学习编译过程中的张量函数变换</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1.3.2 </span><span class="caption-text">机器学习编译过程中的张量函数变换</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>我们有多种方法可以在特定环境中实现模型执行。 上面的例子展示了一个例子。
 值得注意的是，有两个区别：
 首先，第一个<code class="docutils literal notranslate"><span class="pre">linear</span></code>层和<code class="docutils literal notranslate"><span class="pre">relu</span></code>计算被折叠成一个
@@ -270,14 +279,16 @@ API、架构和连接组件方面发挥着越来越重要的作用。 最后，�
 当然，现实世界的用例，<code class="docutils literal notranslate"><span class="pre">linear_relu</span></code>
 可以通过各种代码优化技术来实现，其中一些技术在的后面的课程中会进行介绍。
 机器学习编译的过程就是是将上图左侧的内容转换为右侧的过程。在不同的场景中，这个过程可以是手动完成的，也可以使用一些自动转换工具，或两者兼而有之。</p>
-<div class="section" id="id5">
+<section id="id5">
 <h3><span class="section-number">1.3.1. </span>备注：抽象和实现<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <p>我们可能注意到的一件事是，我们使用了几种不同的方式来表示张量函数。例如，<code class="docutils literal notranslate"><span class="pre">linear_relu</span></code>
 可以表示为图形中的组合框或循环嵌套 (loop nest) 表示。</p>
-<div class="figure align-default" id="id11">
+<figure class="align-default" id="id11">
 <span id="fig-mlc-abstraction-impl"></span><img alt="../_images/mlc-abstraction-impl.png" src="../_images/mlc-abstraction-impl.png" />
-<p class="caption"><span class="caption-number">Fig. 1.3.3 </span><span class="caption-text">抽象和实现</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1.3.3 </span><span class="caption-text">抽象和实现</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>我们使用<strong>抽象
 (Abstraction)</strong>来表示我们用来表示相同张量函数的方式。不同的抽象可能会指定一些细节，而忽略其他<strong>实现(Implementations)</strong>细节。例如，<code class="docutils literal notranslate"><span class="pre">linear_relu</span></code>
 可以使用另一个不同的 for 循环来实现。</p>
@@ -286,9 +297,9 @@ API、架构和连接组件方面发挥着越来越重要的作用。 最后，�
 解释器实现或编译为本地汇编代码。</p>
 <p>MLC
 实际上是在相同或不同抽象下转换和组装张量函数的过程。我们将研究张量函数的不同抽象类型，以及它们如何协同工作以解决机器学习部署中的挑战。</p>
-</div>
-</div>
-<div class="section" id="id6">
+</section>
+</section>
+<section id="id6">
 <h2><span class="section-number">1.4. </span>总结<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>机器学习编译的目标</p>
@@ -312,8 +323,8 @@ API、架构和连接组件方面发挥着越来越重要的作用。 最后，�
 </ul>
 </li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
         </div>

@@ -5,13 +5,13 @@
 前言
 ----
 
-.. figure:: ../img/tensor_func_linear_relu.png
+|image1|
 
 大多数 MLC
 过程可以看作是张量函数之间的转换。我们打算在上一节课中回答的主要问题是：
 
--  什么是可能的张量函数抽象表达形式？
--  什么是可能的张量函数变换？
+- 什么是可能的张量函数抽象表达形式？
+- 什么是可能的张量函数变换？
 
 在上一课中，我们主要关注点是元张量函数。在本次讲座中，我们将讨论如何构建端到端模型。
 
@@ -19,6 +19,8 @@
 --------
 
 首先，我们将导入必要的依赖项。
+
+.. |image1| image:: ../img/tensor_func_linear_relu.png
 
 .. raw:: latex
 
@@ -70,26 +72,10 @@
 .. parsed-literal::
     :class: output
 
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz to data/FashionMNIST/raw/train-images-idx3-ubyte.gz
     100.0%
-    Extracting data/FashionMNIST/raw/train-images-idx3-ubyte.gz to data/FashionMNIST/raw
-    
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz to data/FashionMNIST/raw/train-labels-idx1-ubyte.gz
     100.0%
-    Extracting data/FashionMNIST/raw/train-labels-idx1-ubyte.gz to data/FashionMNIST/raw
-    
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz to data/FashionMNIST/raw/t10k-images-idx3-ubyte.gz
     100.0%
-    Extracting data/FashionMNIST/raw/t10k-images-idx3-ubyte.gz to data/FashionMNIST/raw
-    
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz
-    Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz to data/FashionMNIST/raw/t10k-labels-idx1-ubyte.gz
-    100.0%Extracting data/FashionMNIST/raw/t10k-labels-idx1-ubyte.gz to data/FashionMNIST/raw
-    
-    
+    100.0%
 
 
 我们可以绘制出我们希望能够预测的图像。
@@ -121,7 +107,7 @@
 .. parsed-literal::
     :class: output
 
-    Class: Bag
+    Class: T-shirt/top
 
 
 下载模型参数
@@ -143,9 +129,11 @@
 relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 层。输出分数是未标准化的，但最大值仍然对应于最可能的类别。
 
-.. figure:: ../img/e2e_fashionmnist_mlp_model.png
+|image1|
 
 让我们从模型的 Numpy 实现开始。
+
+.. |image1| image:: ../img/e2e_fashionmnist_mlp_model.png
 
 .. raw:: latex
 
@@ -186,10 +174,11 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    [[-13.617741  -23.764347   -8.766845  -14.175274  -12.962378   -9.517136
-       -4.7158275   2.538267   10.880611   -9.265209 ]]
-    [8]
-    NumPy-MLP Prediction: Bag
+    [[ 2.3660181e+01 -1.0503739e+01 -7.4466095e+00 -6.7566099e+00
+      -3.5482716e+01 -3.8117035e+01  5.7458729e-03 -4.2515682e+01
+      -3.0048491e+01 -4.1714348e+01]]
+    [0]
+    NumPy-MLP Prediction: T-shirt/top
 
 
 上面的示例代码显示了利用高层NumPy数组操作，执行端到端模型执行的过程。
@@ -198,9 +187,8 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 
 为了说明底层细节，我们将再次用底层 NumPy 编写示例：
 
--  我们将在使用循环而不是数组函数来演示循环计算。
--  我们总是通过 ``np.empty``
-   显式分配数组并传递它们。（不包含数组初始化）
+- 我们将在使用循环而不是数组函数来演示循环计算。
+- 我们总是通过 ``np.empty`` 显式分配数组并传递它们。（不包含数组初始化）
 
 下面的代码展示了同一模型的底层 NumPy 实现：
 
@@ -272,7 +260,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy MLP Prediction: Bag
+    Low-level Numpy MLP Prediction: T-shirt/top
 
 
 在 TVMScript 中构建端到端 IRModule
@@ -344,18 +332,18 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 同样，对比查看 TVMScript 代码和底级 NumPy
 代码会对我们理解代码有很大帮助。我们这里将详细介绍它们中的每一个元素。由于我们已经了解了元张量函数，因此我们将专注于高层的执行部分。
 
-.. figure:: ../img/e2e_compare_to_lnumpy.png
+|image1|
 
 计算图
 ~~~~~~
 
-.. figure:: ../img/e2e_computational_graph_call_tir.png
+|image2|
 
 使用图 (graph) 来可视化高层模型执行通常很有帮助。 上图是 ``main``
 函数的计算图视图：
 
--  图中的每个框都对应于计算操作。
--  箭头对应于中间张量的输入输出。
+- 图中的每个框都对应于计算操作。
+- 箭头对应于中间张量的输入输出。
 
 我们在之前的课程中已经看到了这种可视化。
 图本身可以看作是一种抽象，在机器学习框架中通常称为\ **计算图
@@ -366,6 +354,9 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 
 您可能已经注意到的一件事是，计算图中的每个操作步骤都包含一个\ ``R.call_dps_packed``\ 操作。
 这是引入元张量函数的过程：
+
+.. |image1| image:: ../img/e2e_compare_to_lnumpy.png
+.. |image2| image:: ../img/e2e_computational_graph_call_tir.png
 
 .. raw:: latex
 
@@ -435,7 +426,7 @@ NumPy 实现，如下所示：
        lnumpy_linear1(lv1, w1, b1, out)
        return out
 
-.. figure:: ../img/e2e_computational_graph_numpy.png
+|image1|
 
 我们当然可以尝试一下 :)
 上图是通过简单地将函数输入连接到函数来将\ ``lnumpy_mlp``\ 拟合成“类计算图”形式的一种可能的“失败尝试”。
@@ -443,9 +434,9 @@ NumPy 实现，如下所示：
 我们可以发现它失去了之前计算图的一些特性。
 具体来说，计算图通常具有以下性质：
 
--  框的每个输入边对应于操作的输入；
--  每个出边对应于操作的输出；
--  每个操作可以任意重新排序，直到边缘的拓扑顺序。
+- 框的每个输入边对应于操作的输入；
+- 每个出边对应于操作的输出；
+- 每个操作可以任意重新排序，直到边缘的拓扑顺序。
 
 当然，我们仍然可以通过引入输入边和输出边来概括图定义，这会使抽象的定义和变换复杂化。
 
@@ -463,6 +454,8 @@ free**\ 的。
 我们还可以在底层 NumPy 中看到 ``call_dps_packed`` 的作用。
 现在我们已经定义了 ``lnumpy_call_dps_packed``\ ，我们可以将底层 NumPy
 代码重写为：
+
+.. |image1| image:: ../img/e2e_computational_graph_numpy.png
 
 .. raw:: latex
 
@@ -494,7 +487,7 @@ free**\ 的。
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy with CallTIR Prediction: Bag
+    Low-level Numpy with CallTIR Prediction: T-shirt/top
 
 
 实际上，最底层的实现会有显式的内存分配，所以\ ``call_dps_packed``\ 主要是为了让我们在生成实际实现之前继续做一些高层的转换。
@@ -558,9 +551,9 @@ blocks），但最好能够理解背后的原因。
 到目前为止，我们已经完成了一个 Relax
 程序的示例，并涵盖了大部分元素，包括：
 
--  计算图
--  ``call_dps_packed``
--  Dataflow block
+- 计算图
+- ``call_dps_packed``
+- Dataflow block
 
 这些元素应该让我们能够开始端到端的模型执行和编译。
 当我们在后面的章节中遇到新概念时，我们还将介绍它们。
@@ -592,9 +585,9 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -611,34 +604,34 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -653,19 +646,19 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     <span class="c1"># from tvm.script import relax as R</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
             <span class="n">X</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
@@ -680,7 +673,7 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
@@ -690,7 +683,7 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
                     <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
     
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">relu0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">relu0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
             <span class="n">X</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
@@ -700,10 +693,10 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
                     <span class="n">vi</span><span class="p">,</span> <span class="n">vj</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="s2">&quot;SS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
-                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">],</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     
         <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-        <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b0</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;n&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">w1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">b1</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="s2">&quot;k&quot;</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
             <span class="n">k</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
@@ -718,7 +711,7 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
 
 
 
-我们调用 ``relax.build`` 来构建这个函数。 注意：Relax
+我们调用 ``tvm.compile`` 来构建这个函数。 注意：Relax
 仍在开发中，因此某些 API 可能会更改。
 不过，我们的主要目标是熟悉端到端模型的整体 MLC
 流程（构造、转换、构建）。
@@ -729,7 +722,8 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
 
 .. code:: python
 
-    ex = relax.build(MyModule, target="llvm")
+    target = tvm.target.Target("llvm", host="llvm")
+    ex = tvm.compile(MyModule, target)
     type(ex)
 
 
@@ -742,7 +736,7 @@ IRModule。 让我们首先回顾一下我们现有的 IRModule。
 .. parsed-literal::
     :class: output
 
-    tvm.relax.vm_build.Executable
+    tvm.relax.vm_build.VMExecutable
 
 
 
@@ -769,8 +763,8 @@ NDArray。
 
 .. code:: python
 
-    data_nd = tvm.nd.array(img.reshape(1, 784))
-    nd_params = {k: tvm.nd.array(v) for k, v in mlp_params.items()}
+    data_nd = tvm.runtime.tensor(img.reshape(1, 784))
+    nd_params = {k: tvm.runtime.tensor(v) for k, v in mlp_params.items()}
 
 然后我们可以通过传入输入参数和权重来运行 ``main`` 函数。
 
@@ -795,8 +789,9 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    [[-13.617741  -23.764349   -8.766844  -14.175275  -12.962375   -9.517134
-       -4.715829    2.5382652  10.880614   -9.26521  ]]
+    [[ 2.3660181e+01 -1.0503730e+01 -7.4466133e+00 -6.7566080e+00
+      -3.5482712e+01 -3.8117031e+01  5.7430267e-03 -4.2515678e+01
+      -3.0048483e+01 -4.1714355e+01]]
 
 
 ``main``
@@ -820,7 +815,7 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    MyModule Prediction: Bag
+    MyModule Prediction: T-shirt/top
 
 
 在环境中集成现有运行库
@@ -879,11 +874,11 @@ IRModule。 在许多情况下，我们可能希望将现有的库函数集成�
 
 .. code:: python
 
-    @tvm.register_func("env.linear", override=True)
-    def torch_linear(x: tvm.nd.NDArray,
-                     w: tvm.nd.NDArray,
-                     b: tvm.nd.NDArray,
-                     out: tvm.nd.NDArray):
+    @tvm.register_global_func("env.linear", override=True)
+    def torch_linear(x: tvm.runtime.Tensor,
+                     w: tvm.runtime.Tensor,
+                     b: tvm.runtime.Tensor,
+                     out: tvm.runtime.Tensor):
         x_torch = torch.from_dlpack(x)
         w_torch = torch.from_dlpack(w)
         b_torch = torch.from_dlpack(b)
@@ -891,9 +886,9 @@ IRModule。 在许多情况下，我们可能希望将现有的库函数集成�
         torch.mm(x_torch, w_torch.T, out=out_torch)
         torch.add(out_torch, b_torch, out=out_torch)
     
-    @tvm.register_func("env.relu", override=True)
-    def lnumpy_relu(x: tvm.nd.NDArray,
-                    out: tvm.nd.NDArray):
+    @tvm.register_global_func("env.relu", override=True)
+    def lnumpy_relu(x: tvm.runtime.Tensor,
+                    out: tvm.runtime.Tensor):
         x_torch = torch.from_dlpack(x)
         out_torch = torch.from_dlpack(out)
         torch.maximum(x_torch, torch.Tensor([0.0]), out=out_torch)
@@ -924,7 +919,8 @@ Build and Run
 
 .. code:: python
 
-    ex = relax.build(MyModuleWithExternCall, target="llvm")
+    target = tvm.target.Target("llvm", host="llvm")
+    ex = tvm.compile(MyModuleWithExternCall, target)
     vm = relax.VirtualMachine(ex, tvm.cpu())
     
     nd_res = vm["main"](data_nd,
@@ -944,7 +940,7 @@ Build and Run
 .. parsed-literal::
     :class: output
 
-    MyModuleWithExternCall Prediction: Bag
+    MyModuleWithExternCall Prediction: T-shirt/top
 
 
 Mixing TensorIR Code and Libraries
@@ -1006,7 +1002,8 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 
 .. code:: python
 
-    ex = relax.build(MyModuleMixture, target="llvm")
+    target = tvm.target.Target("llvm", host="llvm")
+    ex = tvm.compile(MyModuleMixture, target)
     vm = relax.VirtualMachine(ex, tvm.cpu())
     
     nd_res = vm["main"](data_nd,
@@ -1026,7 +1023,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 .. parsed-literal::
     :class: output
 
-    MyModuleMixture Prediction: Bag
+    MyModuleMixture Prediction: T-shirt/top
 
 
 将参数绑定到 IRModule
@@ -1059,9 +1056,9 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
     .output_html .hll { background-color: #ffffcc }
     .output_html { background: #f8f8f8; }
     .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-    .output_html .err { border: 1px solid #FF0000 } /* Error */
+    .output_html .err { border: 1px solid #F00 } /* Error */
     .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-    .output_html .o { color: #666666 } /* Operator */
+    .output_html .o { color: #666 } /* Operator */
     .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
     .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
     .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -1078,34 +1075,34 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
     .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
     .output_html .gs { font-weight: bold } /* Generic.Strong */
     .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .output_html .gt { color: #0044DD } /* Generic.Traceback */
+    .output_html .gt { color: #04D } /* Generic.Traceback */
     .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
     .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
     .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
     .output_html .kp { color: #008000 } /* Keyword.Pseudo */
     .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
     .output_html .kt { color: #B00040 } /* Keyword.Type */
-    .output_html .m { color: #666666 } /* Literal.Number */
+    .output_html .m { color: #666 } /* Literal.Number */
     .output_html .s { color: #BA2121 } /* Literal.String */
     .output_html .na { color: #687822 } /* Name.Attribute */
     .output_html .nb { color: #008000 } /* Name.Builtin */
-    .output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .output_html .no { color: #880000 } /* Name.Constant */
-    .output_html .nd { color: #AA22FF } /* Name.Decorator */
+    .output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+    .output_html .no { color: #800 } /* Name.Constant */
+    .output_html .nd { color: #A2F } /* Name.Decorator */
     .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
     .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-    .output_html .nf { color: #0000FF } /* Name.Function */
+    .output_html .nf { color: #00F } /* Name.Function */
     .output_html .nl { color: #767600 } /* Name.Label */
-    .output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+    .output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
     .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
     .output_html .nv { color: #19177C } /* Name.Variable */
-    .output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .output_html .w { color: #bbbbbb } /* Text.Whitespace */
-    .output_html .mb { color: #666666 } /* Literal.Number.Bin */
-    .output_html .mf { color: #666666 } /* Literal.Number.Float */
-    .output_html .mh { color: #666666 } /* Literal.Number.Hex */
-    .output_html .mi { color: #666666 } /* Literal.Number.Integer */
-    .output_html .mo { color: #666666 } /* Literal.Number.Oct */
+    .output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+    .output_html .w { color: #BBB } /* Text.Whitespace */
+    .output_html .mb { color: #666 } /* Literal.Number.Bin */
+    .output_html .mf { color: #666 } /* Literal.Number.Float */
+    .output_html .mh { color: #666 } /* Literal.Number.Hex */
+    .output_html .mi { color: #666 } /* Literal.Number.Integer */
+    .output_html .mo { color: #666 } /* Literal.Number.Oct */
     .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
     .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
     .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -1120,19 +1117,19 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
     .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
     .output_html .ss { color: #19177C } /* Literal.String.Symbol */
     .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .output_html .fm { color: #0000FF } /* Name.Function.Magic */
+    .output_html .fm { color: #00F } /* Name.Function.Magic */
     .output_html .vc { color: #19177C } /* Name.Variable.Class */
     .output_html .vg { color: #19177C } /* Name.Variable.Global */
     .output_html .vi { color: #19177C } /* Name.Variable.Instance */
     .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-    .output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
+    .output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="c1"># from tvm.script import ir as I</span>
     <span class="c1"># from tvm.script import tir as T</span>
     <span class="c1"># from tvm.script import relax as R</span>
     
     <span class="nd">@I</span><span class="o">.</span><span class="n">ir_module</span>
-    <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">:</span>
         <span class="nd">@T</span><span class="o">.</span><span class="n">prim_func</span>
-        <span class="k">def</span> <span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">handle</span><span class="p">):</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
             <span class="n">X</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">match_buffer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">int64</span><span class="p">()</span>
@@ -1147,7 +1144,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
                     <span class="n">T</span><span class="o">.</span><span class="n">reads</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">],</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">])</span>
                     <span class="n">T</span><span class="o">.</span><span class="n">writes</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">init</span><span class="p">():</span>
-                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">vj</span><span class="p">,</span> <span class="n">vk</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
                 <span class="k">with</span> <span class="n">T</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
@@ -1157,7 +1154,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
                     <span class="n">Z</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">vi</span><span class="p">,</span> <span class="n">vj</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">vj</span><span class="p">]</span>
     
         <span class="nd">@R</span><span class="o">.</span><span class="n">function</span>
-        <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">R</span><span class="o">.</span><span class="n">dataflow</span><span class="p">():</span>
                 <span class="n">lv0</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_dps_packed</span><span class="p">(</span><span class="s2">&quot;linear0&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;relax.expr.Constant&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;relax.expr.Constant&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="n">out_sinfo</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
                 <span class="n">lv1</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">call_dps_packed</span><span class="p">(</span><span class="s2">&quot;env.relu&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">lv0</span><span class="p">,),</span> <span class="n">out_sinfo</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">Tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
@@ -1183,7 +1180,8 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 
 .. code:: python
 
-    ex = relax.build(MyModuleWithParams, target="llvm")
+    target = tvm.target.Target("llvm", host="llvm")
+    ex = tvm.compile(MyModuleWithParams, target)
     vm = relax.VirtualMachine(ex, tvm.cpu())
     
     nd_res = vm["main"](data_nd)
@@ -1199,7 +1197,7 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 .. parsed-literal::
     :class: output
 
-    MyModuleWithParams Prediction: Bag
+    MyModuleWithParams Prediction: T-shirt/top
 
 
 讨论
@@ -1208,15 +1206,15 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 在本章中，我们讨论了许多描述端到端模型执行的方法。
 我们可能已经注意到的一件事是我们回到了\ **抽象和实现**\ 的主题。
 
--  TensorIR 函数和库函数都遵循相同的目标传递方式。
-   因此，我们可以在示例中简单地将调用从一个替换为另一个。
--  我们可以使用不同的方式来表示 MLC 过程不同阶段的计算。
+- TensorIR 函数和库函数都遵循相同的目标传递方式。
+  因此，我们可以在示例中简单地将调用从一个替换为另一个。
+- 我们可以使用不同的方式来表示 MLC 过程不同阶段的计算。
 
 到目前为止，我们已经介绍了一些转换端到端 IRModule
 的方法（例如参数绑定）。 让我们回到 MLC 的共同主题：MLC
 过程是在不同的抽象表示之间执行并在它们之间进行转换。
 
-.. figure:: ../img/mlc_process.png
+|image1|
 
 端到端执行中有许多可能的转换。 例如，我们可以使用 ``MyModuleMixture``
 中的 ``TensorIR`` 函数，并使用上一课中讲授的调度操作更改 ``linear0``
@@ -1234,10 +1232,12 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 总结
 ----
 
--  计算图抽象有助于将元张量函数拼接在一起以进行端到端执行。
--  Relax 抽象的关键要素包括
+- 计算图抽象有助于将元张量函数拼接在一起以进行端到端执行。
+- Relax 抽象的关键要素包括
 
-   -  call_dps_packed 构造，将目标传递规范的元函数嵌入到计算图中
-   -  Dataflow block
+  - call_dps_packed 构造，将目标传递规范的元函数嵌入到计算图中
+  - Dataflow block
 
--  计算图允许调用环境库函数和 ``TensorIR`` 函数。
+- 计算图允许调用环境库函数和 ``TensorIR`` 函数。
+
+.. |image1| image:: ../img/mlc_process.png
