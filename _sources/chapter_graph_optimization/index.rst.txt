@@ -964,7 +964,7 @@ Mutator 中的内部 block builder 并使用 ``call_te`` 返回转换后的值�
 .. parsed-literal::
     :class: output
 
-    Class: Shirt
+    Class: Sneaker
 
 
 .. raw:: latex
@@ -991,7 +991,7 @@ Mutator 中的内部 block builder 并使用 ``call_te`` 返回转换后的值�
 .. parsed-literal::
     :class: output
 
-    MLPModule Prediction: Shirt
+    MLPModule Prediction: Sneaker
 
 
 讨论

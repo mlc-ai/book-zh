@@ -81,7 +81,7 @@ Show Source
                   GitHub
               </a>
           
-              <a  class="mdl-navigation__link" href="https://mlc.ai">
+              <a  class="mdl-navigation__link" href="https://book.mlc.ai">
                   <i class="fas fa-external-link-alt"></i>
                   English
               </a>
@@ -244,7 +244,7 @@ Show Source
 <figure class="align-default">
 <img alt="../_images/output_index_e758e2_5_0.png" src="../_images/output_index_e758e2_5_0.png" />
 </figure>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 </section>
@@ -284,11 +284,10 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NumPy-MLP Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="mf">2.3660181e+01</span> <span class="o">-</span><span class="mf">1.0503739e+01</span> <span class="o">-</span><span class="mf">7.4466095e+00</span> <span class="o">-</span><span class="mf">6.7566099e+00</span>
-  <span class="o">-</span><span class="mf">3.5482716e+01</span> <span class="o">-</span><span class="mf">3.8117035e+01</span>  <span class="mf">5.7458729e-03</span> <span class="o">-</span><span class="mf">4.2515682e+01</span>
-  <span class="o">-</span><span class="mf">3.0048491e+01</span> <span class="o">-</span><span class="mf">4.1714348e+01</span><span class="p">]]</span>
-<span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">NumPy</span><span class="o">-</span><span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="o">-</span><span class="mf">2.6275814</span>  <span class="mf">13.526744</span>  <span class="o">-</span><span class="mf">11.639971</span>   <span class="o">-</span><span class="mf">3.8508534</span> <span class="o">-</span><span class="mf">25.822008</span>  <span class="o">-</span><span class="mf">24.389156</span>
+    <span class="mf">5.2193155</span> <span class="o">-</span><span class="mf">37.311207</span>  <span class="o">-</span><span class="mf">24.003992</span>  <span class="o">-</span><span class="mf">41.856964</span> <span class="p">]]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">NumPy</span><span class="o">-</span><span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 <p>上面的示例代码显示了利用高层NumPy数组操作，执行端到端模型执行的过程。</p>
@@ -354,7 +353,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Low-level Numpy MLP Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="n">MLP</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 </section>
@@ -516,7 +515,7 @@ free</strong>的。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Low-level Numpy with CallTIR Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="k">with</span> <span class="n">CallTIR</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Low</span><span class="o">-</span><span class="n">level</span> <span class="n">Numpy</span> <span class="k">with</span> <span class="n">CallTIR</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 <p>实际上，最底层的实现会有显式的内存分配，所以<code class="docutils literal notranslate"><span class="pre">call_dps_packed</span></code>主要是为了让我们在生成实际实现之前继续做一些高层的转换。</p>
@@ -744,9 +743,8 @@ NDArray。</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">nd_res</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="mf">2.3660181e+01</span> <span class="o">-</span><span class="mf">1.0503730e+01</span> <span class="o">-</span><span class="mf">7.4466133e+00</span> <span class="o">-</span><span class="mf">6.7566080e+00</span>
-  <span class="o">-</span><span class="mf">3.5482712e+01</span> <span class="o">-</span><span class="mf">3.8117031e+01</span>  <span class="mf">5.7430267e-03</span> <span class="o">-</span><span class="mf">4.2515678e+01</span>
-  <span class="o">-</span><span class="mf">3.0048483e+01</span> <span class="o">-</span><span class="mf">4.1714355e+01</span><span class="p">]]</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="o">-</span><span class="mf">2.627581</span>   <span class="mf">13.526749</span>  <span class="o">-</span><span class="mf">11.63997</span>    <span class="o">-</span><span class="mf">3.850852</span>  <span class="o">-</span><span class="mf">25.82201</span>   <span class="o">-</span><span class="mf">24.389156</span>
+    <span class="mf">5.2193146</span> <span class="o">-</span><span class="mf">37.311203</span>  <span class="o">-</span><span class="mf">24.004</span>     <span class="o">-</span><span class="mf">41.85696</span>  <span class="p">]]</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">main</span></code>
@@ -756,7 +754,7 @@ NDArray。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModule Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModule</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModule</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 </section>
@@ -843,7 +841,7 @@ C++）注册没有 Python 依赖的函数。 我们将在以后的课程中介�
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModuleWithExternCall Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithExternCall</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithExternCall</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 </section>
@@ -907,7 +905,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModuleMixture Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleMixture</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleMixture</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 </section>
@@ -1051,7 +1049,7 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MyModuleWithParams Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithParams</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">T</span><span class="o">-</span><span class="n">shirt</span><span class="o">/</span><span class="n">top</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyModuleWithParams</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
 </pre></div>
 </div>
 </section>

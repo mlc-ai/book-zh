@@ -107,7 +107,7 @@
 .. parsed-literal::
     :class: output
 
-    Class: T-shirt/top
+    Class: Trouser
 
 
 下载模型参数
@@ -174,11 +174,10 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    [[ 2.3660181e+01 -1.0503739e+01 -7.4466095e+00 -6.7566099e+00
-      -3.5482716e+01 -3.8117035e+01  5.7458729e-03 -4.2515682e+01
-      -3.0048491e+01 -4.1714348e+01]]
-    [0]
-    NumPy-MLP Prediction: T-shirt/top
+    [[ -2.6275814  13.526744  -11.639971   -3.8508534 -25.822008  -24.389156
+        5.2193155 -37.311207  -24.003992  -41.856964 ]]
+    [1]
+    NumPy-MLP Prediction: Trouser
 
 
 上面的示例代码显示了利用高层NumPy数组操作，执行端到端模型执行的过程。
@@ -260,7 +259,7 @@ relu 激活层组成。为了简化问题，我们删除了最终的 softmax
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy MLP Prediction: T-shirt/top
+    Low-level Numpy MLP Prediction: Trouser
 
 
 在 TVMScript 中构建端到端 IRModule
@@ -487,7 +486,7 @@ free**\ 的。
 .. parsed-literal::
     :class: output
 
-    Low-level Numpy with CallTIR Prediction: T-shirt/top
+    Low-level Numpy with CallTIR Prediction: Trouser
 
 
 实际上，最底层的实现会有显式的内存分配，所以\ ``call_dps_packed``\ 主要是为了让我们在生成实际实现之前继续做一些高层的转换。
@@ -789,9 +788,8 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    [[ 2.3660181e+01 -1.0503730e+01 -7.4466133e+00 -6.7566080e+00
-      -3.5482712e+01 -3.8117031e+01  5.7430267e-03 -4.2515678e+01
-      -3.0048483e+01 -4.1714355e+01]]
+    [[ -2.627581   13.526749  -11.63997    -3.850852  -25.82201   -24.389156
+        5.2193146 -37.311203  -24.004     -41.85696  ]]
 
 
 ``main``
@@ -815,7 +813,7 @@ NDArray。
 .. parsed-literal::
     :class: output
 
-    MyModule Prediction: T-shirt/top
+    MyModule Prediction: Trouser
 
 
 在环境中集成现有运行库
@@ -940,7 +938,7 @@ Build and Run
 .. parsed-literal::
     :class: output
 
-    MyModuleWithExternCall Prediction: T-shirt/top
+    MyModuleWithExternCall Prediction: Trouser
 
 
 Mixing TensorIR Code and Libraries
@@ -1023,7 +1021,7 @@ IRModule，其中所有元操作都被分派给运行库。有时将两者混合
 .. parsed-literal::
     :class: output
 
-    MyModuleMixture Prediction: T-shirt/top
+    MyModuleMixture Prediction: Trouser
 
 
 将参数绑定到 IRModule
@@ -1197,7 +1195,7 @@ IRModule，我们现在可以通过传入输入数据来调用该函数。
 .. parsed-literal::
     :class: output
 
-    MyModuleWithParams Prediction: T-shirt/top
+    MyModuleWithParams Prediction: Trouser
 
 
 讨论

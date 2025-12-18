@@ -667,8 +667,8 @@ IRModule。
     -------------  ------  ---------------------------------------------------------  -----------  --------
     placeholder    x       x                                                          ()           {}
     get_attr       weight  weight                                                     ()           {}
-    call_function  matmul  <built-in method matmul of type object at 0x7f917c5d6c20>  (x, weight)  {}
-    call_function  relu    <built-in method relu of type object at 0x7f917c5d6c20>    (matmul,)    {}
+    call_function  matmul  <built-in method matmul of type object at 0x7fa6e0fd6c20>  (x, weight)  {}
+    call_function  relu    <built-in method relu of type object at 0x7fa6e0fd6c20>    (matmul,)    {}
     output         output  output                                                     (relu,)      {}
 
 
@@ -886,7 +886,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    Class: Trouser
+    Class: Coat
 
 
 .. raw:: latex
@@ -958,7 +958,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    Torch Prediction: Trouser
+    Torch Prediction: Coat
 
 
 让我们尝试通过为相应的 ``nn.Module`` 定义映射函数来从 FX 转换。
@@ -1113,7 +1113,7 @@ API 做到这一点。
 .. parsed-literal::
     :class: output
 
-    MLPModule Prediction: Trouser
+    MLPModule Prediction: Coat
 
 
 备注：翻译成高层算子

@@ -81,7 +81,7 @@ Show Source
                   GitHub
               </a>
           
-              <a  class="mdl-navigation__link" href="https://mlc.ai">
+              <a  class="mdl-navigation__link" href="https://book.mlc.ai">
                   <i class="fas fa-external-link-alt"></i>
                   English
               </a>
@@ -552,8 +552,8 @@ IRModule。</p>
 <span class="o">-------------</span>  <span class="o">------</span>  <span class="o">---------------------------------------------------------</span>  <span class="o">-----------</span>  <span class="o">--------</span>
 <span class="n">placeholder</span>    <span class="n">x</span>       <span class="n">x</span>                                                          <span class="p">()</span>           <span class="p">{}</span>
 <span class="n">get_attr</span>       <span class="n">weight</span>  <span class="n">weight</span>                                                     <span class="p">()</span>           <span class="p">{}</span>
-<span class="n">call_function</span>  <span class="n">matmul</span>  <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">matmul</span> <span class="n">of</span> <span class="nb">type</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f917c5d6c20</span><span class="o">&gt;</span>  <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>  <span class="p">{}</span>
-<span class="n">call_function</span>  <span class="n">relu</span>    <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">relu</span> <span class="n">of</span> <span class="nb">type</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f917c5d6c20</span><span class="o">&gt;</span>    <span class="p">(</span><span class="n">matmul</span><span class="p">,)</span>    <span class="p">{}</span>
+<span class="n">call_function</span>  <span class="n">matmul</span>  <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">matmul</span> <span class="n">of</span> <span class="nb">type</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fa6e0fd6c20</span><span class="o">&gt;</span>  <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>  <span class="p">{}</span>
+<span class="n">call_function</span>  <span class="n">relu</span>    <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">relu</span> <span class="n">of</span> <span class="nb">type</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fa6e0fd6c20</span><span class="o">&gt;</span>    <span class="p">(</span><span class="n">matmul</span><span class="p">,)</span>    <span class="p">{}</span>
 <span class="n">output</span>         <span class="n">output</span>  <span class="n">output</span>                                                     <span class="p">(</span><span class="n">relu</span><span class="p">,)</span>      <span class="p">{}</span>
 </pre></div>
 </div>
@@ -726,7 +726,7 @@ API 做到这一点。</p>
 <figure class="align-default">
 <img alt="../_images/output_index_4f28a7_60_0.png" src="../_images/output_index_4f28a7_60_0.png" />
 </figure>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="p">:</span> <span class="n">Trouser</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="p">:</span> <span class="n">Coat</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span># Hide outputs
@@ -766,7 +766,7 @@ API 做到这一点。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Torch Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Torch</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Torch</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Coat</span>
 </pre></div>
 </div>
 <p>让我们尝试通过为相应的 <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code> 定义映射函数来从 FX 转换。
@@ -895,7 +895,7 @@ API 做到这一点。</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MLPModule Prediction:&quot;</span><span class="p">,</span> <span class="n">class_names</span><span class="p">[</span><span class="n">pred_kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MLPModule</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Trouser</span>
+<div class="output highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MLPModule</span> <span class="n">Prediction</span><span class="p">:</span> <span class="n">Coat</span>
 </pre></div>
 </div>
 </section>
